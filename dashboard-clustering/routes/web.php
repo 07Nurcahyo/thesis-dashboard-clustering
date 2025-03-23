@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\admin_controller;
+use App\Http\Controllers\main_controller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+
+Route::get('/', [main_controller::class, 'index']);
+Route::get('/admin', [admin_controller::class, 'index']);
