@@ -21,4 +21,14 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [main_controller::class, 'index']);
-Route::get('/admin', [admin_controller::class, 'index']);
+
+Route::get('/login_admin', [admin_controller::class, 'login'])->name('login');
+Route::post('proses_login', [admin_controller::class, 'proses_login'])->name('proses_login');
+Route::get('logout', [admin_controller::class, 'logout'])->name('logout');
+
+
+Route::group(['middleware' => ['auth']], function() {
+    Route::group(['middleware' => ['cek_login']], function() {
+        Route::get('/admin', [admin_controller::class, 'index']);
+    });
+});
