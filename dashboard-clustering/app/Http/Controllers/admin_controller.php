@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class admin_controller extends Controller
 {
-    // public function index(){
-    //     return view('admin.main');
-    // }
+    public function index(){
+        return view('admin/main');
+    }
 
     public function login(){
         $user = Auth::user();
@@ -31,7 +31,7 @@ class admin_controller extends Controller
         if (Auth::attempt($credential)) {
             $user = Auth::user();
             if ($user) {
-                return redirect()->intended('dashboard');
+                return redirect()->intended('admin.main');
             }
             return redirect()->intended('/');
         }

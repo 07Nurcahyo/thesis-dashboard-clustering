@@ -14,6 +14,10 @@
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
+  {{-- sweetalert2 --}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.min.css">
+
+  @stack('css')
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -26,11 +30,11 @@
       <p class="login-box-msg">Login untuk masuk ke halaman admin</p>
       @error('error')
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <b>Opps!</b> {{$message}}
+            {{$message}}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       @enderror
-      <form action="{{ url('proses_login') }}" method="post">
+      <form action="{{ url('proses_login') }}" method="post" id="login_">
         @csrf
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
@@ -56,7 +60,7 @@
                 Ingat Saya
               </label>
             </div> --}}
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
+            <button type="submit" class="btn btn-primary btn-block" onclick="loginConfirm('Berhasil login, tunggu sebentar!🗿')">Login</button>
           </div>
           <!-- /.col -->
           <div class="col-4">
@@ -95,5 +99,63 @@
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+{{-- sweetalert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  // untuk mengirimkan token laravel csrf pada setiap request ajax
+  $.ajaxSetup({headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}});
+</script>
+<script>
+    // $(document).ready(function() {
+    //     loginConfirm = function(text) {
+    //         console.log('#login_');
+    //         event.preventDefault();
+    //         Swal.fire({
+    //             title: "Berhasil Login",
+    //             text: text,
+    //             icon: "success",
+    //             position: "top-end"
+    //         }).then((result) => {
+    //             $('#login_').submit();
+    //         });
+    //     }
+    // });
+
+    // $(document).ready(function() {
+    //     $('#login_').on('submit', function(event) {
+    //         event.preventDefault();
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: $(this).attr('action'),
+    //             data: $(this).serialize(),
+    //             success: function(response) {
+    //                 if (response.success) {
+    //                     Swal.fire({
+    //                         title: "Berhasil Login",
+    //                         text: "Berhasil login, tunggu sebentar!🗿",
+    //                         icon: "success"
+    //                     }).then(() => {
+    //                         $('#login_')[0].submit();
+    //                     });
+    //                 } else {
+    //                     Swal.fire({
+    //                         title: "Login Gagal",
+    //                         text: "Username atau password salah!",
+    //                         icon: "error"
+    //                     });
+    //                 }
+    //             },
+    //             error: function() {
+    //                 Swal.fire({
+    //                     title: "Login Error",
+    //                     text: "Terjadi kesalahan saat memproses permintaan.",
+    //                     icon: "error"
+    //                 });
+    //             }
+    //         });
+    //     });
+    // });
+</script>
+@stack('js')
 </body>
 </html>

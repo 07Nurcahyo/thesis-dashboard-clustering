@@ -1,7 +1,7 @@
 @extends('layouts_guest.template')
 
 @section('content')
-    <h1>halo dunia ini halaman guest lihat data</h1>
+    <h1>halo dunia ini halaman guest lihat peta interaktif</h1>
     {{-- <div class="container">
       <div class="row">
       </div>
