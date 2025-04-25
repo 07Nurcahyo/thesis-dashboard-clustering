@@ -9,6 +9,10 @@ class main_controller extends Controller
     // public function index(){
     //     return view('main');
     // }
+
+    public function tes(){
+        return view('tes');
+    }
     public function index(){
         $breadcrumb = (object) [
             'title' => 'Home',

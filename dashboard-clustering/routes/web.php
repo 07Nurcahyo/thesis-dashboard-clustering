@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-
+Route::get('/tes', [main_controller::class, 'tes'])->name('tes');
 Route::get('/', [main_controller::class, 'index']);
 Route::get('/lihat_data', [main_controller::class, 'lihat_data'])->name('lihat_data');
 Route::get('/lihat_grafik', [main_controller::class, 'lihat_grafik'])->name('lihat_grafik');

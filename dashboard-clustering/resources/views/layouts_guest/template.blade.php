@@ -12,6 +12,8 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="css/style.css">
+  {{-- map --}}
+  <link rel="stylesheet" href="{{asset('adminlte/plugins/jqvmap/jqvmap.css')}}" media="screen" type="text/css">
   {{-- bootstrap 5 (optional) --}}
   {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></link> --}}
   @stack('css')
@@ -26,7 +28,7 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    {{-- <div class="content-header">
+    <div class="content-header">
       <div class="container">
         <div class="row mb-2">
           <div class="col-sm-6">
@@ -41,7 +43,7 @@
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
-    </div> --}}
+    </div>
     <!-- /.content-header -->
 
     <!-- Main content -->
@@ -55,21 +57,24 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
-
 <!-- jQuery -->
 <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <!-- jQuery Mapael -->
 <script src="{{ asset('adminlte/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/raphael/raphael.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
+{{-- map --}}
+<script src="{{asset('adminlte/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
+<script src="{{asset('adminlte/plugins/jqvmap/maps/jquery.vmap.indonesia.js')}}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
-<!-- AdminLTE for demo purposes -->
-{{-- <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script> --}}
+{{-- Overlay Scrollbars --}}
+<script src="{{ asset('adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+{{-- ChartJS --}}
+<script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script>
 <script>
     // untuk mengirimkan token laravel csrf pada setiap request ajax
     $.ajaxSetup({headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}});
