@@ -83,7 +83,6 @@
 {{-- sweetalert2 --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- ChartJS -->
-{{-- <script src="{{ asset('adminlte/plugins/chart.js/Chart.min.js') }}"></script> --}}
 <script src="{{ asset('adminlte/plugins/chart.js/Chart.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 {{-- <script src="{{ asset('adminlte/dist/js/demo.js') }}"></script> --}}

@@ -6,6 +6,7 @@ use App\Models\provinsi;
 use Illuminate\Http\Request;
 use App\Models\data_pekerja;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class main_controller extends Controller
 {
@@ -13,9 +14,6 @@ class main_controller extends Controller
     //     return view('main');
     // }
 
-    public function tes(){
-        return view('tes');
-    }
     public function index(){
         $breadcrumb = (object) [
             'title' => 'Home',
@@ -43,11 +41,9 @@ class main_controller extends Controller
     }
     public function list_data_pekerja(Request $request){
         $data_pekerjas = data_pekerja::select('id', 'id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('provinsi');
-        $data_provinsis = provinsi::all();
         // filter
         if ($request->id_provinsi) {
             $p = strval($request->id_provinsi);
-            // $provinsis->where('id_provinsi', 'like', '%' . $p . '%');
             $data_pekerjas->where('id_provinsi',$p);
         }
         return DataTables::of($data_pekerjas)
@@ -60,6 +56,7 @@ class main_controller extends Controller
             ->make(true);
     }
 
+    // lihat grafik
     public function lihat_grafik(){
         $breadcrumb = (object) [
             'title' => 'Lihat Grafik',
@@ -69,9 +66,54 @@ class main_controller extends Controller
             'title' => 'Lihat Grafik'
         ];
         $activeMenu = 'lihat_grafik'; //set menu yang sedang aktif
-        return view('lihat_grafik', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        $data_pekerja = data_pekerja::all();
+        $tahunList = data_pekerja::select('tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
+        $provinsi = Provinsi::all();
+        return view('lihat_grafik', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'data_pekerja' => $data_pekerja], compact('tahunList', 'provinsi'));
+    }
+    public function getDataGK(Request $request){
+        $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.garis_kemiskinan')
+            ->join('provinsi', 'data_pekerja.id_provinsi', '=', 'provinsi.id_provinsi');
+
+        if ($request->tahun) {
+            $query->where('data_pekerja.tahun', $request->tahun);
+        }
+
+        $data = $query->get();
+        return response()->json($data);
+    }
+    public function getDataUMP(Request $request){
+        $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.upah_minimum')
+        ->join('provinsi', 'data_pekerja.id_provinsi', '=', 'provinsi.id_provinsi');
+
+        if ($request->tahun) {
+            $query->where('data_pekerja.tahun', $request->tahun);
+        }
+
+        return response()->json($query->get());
+    }
+    public function getDataPengeluaran(Request $request){
+        $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.pengeluaran')
+        ->join('provinsi', 'data_pekerja.id_provinsi', '=', 'provinsi.id_provinsi');
+
+        if ($request->tahun) {
+            $query->where('data_pekerja.tahun', $request->tahun);
+        }
+
+        return response()->json($query->get());
+    }
+    public function getDataRRU(Request $request){
+        $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.rr_upah')
+        ->join('provinsi', 'data_pekerja.id_provinsi', '=', 'provinsi.id_provinsi');
+
+        if ($request->tahun) {
+            $query->where('data_pekerja.tahun', $request->tahun);
+        }
+
+        return response()->json($query->get());
     }
 
+    // lihat peta
     public function lihat_peta(){
         $breadcrumb = (object) [
             'title' => 'Lihat Peta',

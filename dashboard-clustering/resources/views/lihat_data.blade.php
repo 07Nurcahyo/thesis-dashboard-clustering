@@ -1,7 +1,9 @@
 @extends('layouts_guest.template')
 
 @section('content')
+
 <div class="container">
+
   <div class="card">
     <div class="card-header d-flex justify-content-center bg-info">
       <h2 class="card-title font-weight-bold" style="font-size: 22px">Data Kesejahteraan Pekerja di Indonesia</h2>
@@ -52,7 +54,18 @@
     </div> <!-- /.card-body -->
 
   </div>
+
+  <div class="card">
+    <div class="card-header d-flex justify-content-center bg-info">
+      <h2 class="card-title font-weight-bold" style="font-size: 22px">Cluster Membership Data Kesejahteraan Pekerja</h2>
+    </div>
+    <div class="card-body">
+      <div id=""></div>
+    </div>
+  </div>
+  
 </div><!-- /.container-fluid -->
+
 @endsection
 
 @push('css')

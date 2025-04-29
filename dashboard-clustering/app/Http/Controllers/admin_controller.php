@@ -17,7 +17,7 @@ class admin_controller extends Controller
         $user = Auth::user();
         // kondisi jika usernya ada
         if ($user) {
-            return redirect()->intended('/');
+            return redirect()->intended('admin');
         }
         return view('admin/login');
     }
@@ -35,7 +35,7 @@ class admin_controller extends Controller
             if ($user) {
                 // dd($user);
                 // $request->session()->regenerate();
-                return redirect()->intended('/');
+                return redirect()->intended('/admin');
             }
             // return redirect()->intended('/');
         } else {
