@@ -23,3 +23,8 @@ Route::get('getDataGK', [main_controller::class, 'getDataGK']);
 Route::get('getDataUMP', [main_controller::class, 'getDataUMP']);
 Route::get('getDataPengeluaran', [main_controller::class, 'getDataPengeluaran']);
 Route::get('getDataRRU', [main_controller::class, 'getDataRRU']);
+
+Route::get('getLineGK', [main_controller::class, 'getLineGK']);
+Route::get('getLineUMP', [main_controller::class, 'getLineUMP']);
+Route::get('getLinePengeluaran', [main_controller::class, 'getLinePengeluaran']);
+Route::get('getLineRRU', [main_controller::class, 'getLineRRU']);

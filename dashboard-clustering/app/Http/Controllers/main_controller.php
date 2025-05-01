@@ -68,8 +68,12 @@ class main_controller extends Controller
         $activeMenu = 'lihat_grafik'; //set menu yang sedang aktif
         $data_pekerja = data_pekerja::all();
         $tahunList = data_pekerja::select('tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
+        $provinsiList = provinsi::whereIn('id_provinsi', data_pekerja::select('id_provinsi')->distinct())
+                    ->orderBy('nama_provinsi')
+                    ->pluck('nama_provinsi', 'id_provinsi');
+        // dd($provinsiList);
         $provinsi = Provinsi::all();
-        return view('lihat_grafik', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'data_pekerja' => $data_pekerja], compact('tahunList', 'provinsi'));
+        return view('lihat_grafik', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'data_pekerja' => $data_pekerja, 'provinsiList' => $provinsiList ], compact('tahunList', 'provinsi'));
     }
     public function getDataGK(Request $request){
         $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.garis_kemiskinan')
@@ -110,6 +114,27 @@ class main_controller extends Controller
             $query->where('data_pekerja.tahun', $request->tahun);
         }
 
+        return response()->json($query->get());
+    }
+    // linechart
+    public function getLineGK(Request $request)
+    {
+        $query = data_pekerja::select('tahun', 'garis_kemiskinan')->where('id_provinsi', $request->get('id_provinsi', 1))->orderBy('tahun');
+        return response()->json($query->get());
+    }
+    public function getLineUMP(Request $request)
+    {
+        $query = data_pekerja::select('tahun', 'upah_minimum')->where('id_provinsi', $request->get('id_provinsi', 1))->orderBy('tahun');
+        return response()->json($query->get());
+    }
+    public function getLinePengeluaran(Request $request)
+    {
+        $query = data_pekerja::select('tahun', 'pengeluaran')->where('id_provinsi', $request->get('id_provinsi', 1))->orderBy('tahun');
+        return response()->json($query->get());
+    }
+    public function getLineRRU(Request $request)
+    {
+        $query = data_pekerja::select('tahun', 'rr_upah')->where('id_provinsi', $request->get('id_provinsi', 1))->orderBy('tahun');
         return response()->json($query->get());
     }
 
