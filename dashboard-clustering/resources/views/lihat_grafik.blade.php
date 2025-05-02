@@ -4,23 +4,22 @@
 <div class="container">
     {{-- barchart --}}
     <div class="card">
-        <div class="card-header bg-info">
+        <div class="card-header bg-secondary">
             <h2 class="card-title font-weight-bold" style="font-size: 22px">Barchart Data Kesejahteraan Pekerja Indonesia</h2>
             <div class="card-tools">
+                <button class="btn btn-tool">
+                    <select class="form-control bg-light border-dark" name="id_provinsi" id="tahun">
+                      @foreach($tahunList as $tahun)
+                        <option value="{{ $tahun }}" {{ $tahun == '2024' ? 'selected' : '' }}>{{ $tahun }}</option>
+                      @endforeach
+                    </select>
+                </button>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus" style="color: white;"></i>
                 </button>
             </div>
         </div>
-        <div class="card-body">
-            <select class="form-control my-3" name="id_provinsi" id="tahun" required>
-              {{-- <option value="">--Pilih Tahun--</option> --}}
-              @foreach($tahunList as $tahun)
-                <option value="{{ $tahun }}" {{ $tahun == '2024' ? 'selected' : '' }}>{{ $tahun }}</option>
-              @endforeach
-            </select>
-            {{-- <div class="chart col-md-6 d-flex justify-content-center align-items-center"> --}}
-            
+        <div class="card-body" style="overflow-y: scroll; max-height: 450px;">
             <div class="chart" style="height: 400px;">
                 {{-- <p class="font-weight-bold text-center">Garis Kemiskinan</p> --}}
                 <canvas id="garisKemiskinanChart"></canvas>
@@ -42,21 +41,24 @@
 
     {{-- linechart --}}
     <div class="card">
-        <div class="card-header bg-info">
+        <div class="card-header bg-secondary">
             <h2 class="card-title font-weight-bold" style="font-size: 22px">Linechart Data Kesejahteraan Pekerja Indonesia</h2>
             <div class="card-tools">
+                <button class="btn btn-tool">
+                    <select class="form-control bg-light border-dark" name="provinsi" id="provinsi">
+                        @foreach($provinsiList as $provinsi=>$value)
+                          {{-- <option value="{{ $provinsi->id_provinsi }}">{{ $provinsi->nama_provinsi }}</option> --}}
+                          <option value="{{ $provinsi }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </button>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus" style="color: white;"></i>
                 </button>
             </div>
         </div>
-        <div class="card-body">
-            <select class="form-control my-3" name="provinsi" id="provinsi">
-                @foreach($provinsiList as $provinsi=>$value)
-                  {{-- <option value="{{ $provinsi->id_provinsi }}">{{ $provinsi->nama_provinsi }}</option> --}}
-                  <option value="{{ $provinsi }}">{{ $value }}</option>
-                @endforeach
-            </select>
+        <div class="card-body" style="overflow-y: scroll; max-height: 450px;">
+            
             <div class="chart" style="height: 400px;">
                 <canvas id="lineChartGK"></canvas>
             </div><hr>
@@ -154,8 +156,8 @@ $(function () {
                 apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataGK',
                 labelKey: 'garis_kemiskinan',
                 displayLabel: 'Garis Kemiskinan',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)'
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)'
             },
             {
                 canvasId: 'upahMinimumChart',
@@ -178,8 +180,8 @@ $(function () {
                 apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataRRU',
                 labelKey: 'rr_upah',
                 displayLabel: 'Rata-Rata Upah',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)'
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)'
             }
         ];
         for (const config of chartConfigs) {
@@ -249,7 +251,16 @@ $(function () {
                             text: displayLabel
                         }
                     }
-                }
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        fontColor: 'black',
+                        fontSize: 14,
+                        fontStyle: 'bold'
+                    }
+                },
             }
         });
     }
@@ -260,8 +271,8 @@ $(function () {
                 apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineGK',
                 labelKey: 'garis_kemiskinan',
                 displayLabel: 'Garis Kemiskinan',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)'
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)'
             },
             {
                 canvasId: 'lineChartUMP',
@@ -284,8 +295,8 @@ $(function () {
                 apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineRRU',
                 labelKey: 'rr_upah',
                 displayLabel: 'Rata-Rata Upah',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)'
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)'
             }
         ];
 
