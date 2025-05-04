@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\provinsi;
 use Illuminate\Http\Request;
 use App\Models\data_pekerja;
+use App\Models\data_pekerja_cluster;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 
@@ -148,6 +149,27 @@ class main_controller extends Controller
             'title' => 'Lihat Peta'
         ];
         $activeMenu = 'lihat_peta'; //set menu yang sedang aktif
-        return view('lihat_peta', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        $tahunList = data_pekerja::select('tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
+        return view('lihat_peta', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'tahunList' => $tahunList]);
     }
+    public function getDataPeta(Request $request){
+        // $query = data_pekerja::select('provinsi.nama_provinsi', 'data_pekerja.garis_kemiskinan', 'data_pekerja.upah_minimum', 'data_pekerja.pengeluaran', 'data_pekerja.rr_upah')
+        //     ->join('provinsi', 'data_pekerja.id_provinsi', '=', 'provinsi.id_provinsi');
+    
+        // if ($request->tahun) {
+        //     $query->where('data_pekerja.tahun', $request->tahun);
+        // }
+        $query = data_pekerja_cluster::select('provinsi.path','data_pekerja_cluster.cluster','cluster.nama_cluster', 'provinsi.nama_provinsi', 'data_pekerja_cluster.tahun', 
+                                               'data_pekerja_cluster.garis_kemiskinan', 'data_pekerja_cluster.upah_minimum', 
+                                               'data_pekerja_cluster.pengeluaran', 'data_pekerja_cluster.rr_upah')
+            ->join('cluster', 'data_pekerja_cluster.cluster', '=', 'cluster.cluster') // Join tabel cluster
+            ->join('provinsi', 'data_pekerja_cluster.id_provinsi', '=', 'provinsi.id_provinsi'); // Join tabel provinsi
+    
+        if ($request->tahun) {
+            $query->where('data_pekerja_cluster.tahun', $request->tahun);
+        }
+    
+        return response()->json($query->get());
+    }
+    
 }

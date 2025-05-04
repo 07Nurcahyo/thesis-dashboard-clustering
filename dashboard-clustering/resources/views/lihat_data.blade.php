@@ -5,7 +5,7 @@
 <div class="container">
 
   <div class="card">
-    <div class="card-header d-flex justify-content-center bg-info">
+    <div class="card-header d-flex justify-content-center bg-secondary">
       <h2 class="card-title font-weight-bold" style="font-size: 22px">Data Kesejahteraan Pekerja di Indonesia</h2>
     </div>
 
@@ -56,7 +56,7 @@
   </div>
 
   <div class="card">
-    <div class="card-header d-flex justify-content-center bg-info">
+    <div class="card-header d-flex justify-content-center bg-secondary">
       <h2 class="card-title font-weight-bold" style="font-size: 22px">Cluster Membership Data Kesejahteraan Pekerja</h2>
     </div>
     <div class="card-body">

@@ -17,5 +17,8 @@ class provinsi extends Model
     public function data_pekerja():HasMany {
         return $this->hasMany(data_pekerja::class, 'id_provinsi', 'id_provinsi');
     }
+    public function data_pekerja_cluster():HasMany {
+        return $this->hasMany(data_pekerja_cluster::class, 'id_provinsi', 'id_provinsi');
+    }
 
 }

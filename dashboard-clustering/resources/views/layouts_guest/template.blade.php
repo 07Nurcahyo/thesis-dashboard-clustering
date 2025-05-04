@@ -72,7 +72,8 @@
 <script src="{{ asset('adminlte/plugins/raphael/raphael.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
 {{-- map --}}
-<script src="{{asset('adminlte/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
+{{-- <script src="{{asset('adminlte/plugins/jqvmap/jquery.vmap.min.js')}}"></script> --}}
+<script src="{{asset('adminlte/plugins/jqvmap/jquery.vmap.js')}}"></script>
 <script src="{{asset('adminlte/plugins/jqvmap/maps/jquery.vmap.indonesia.js')}}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
