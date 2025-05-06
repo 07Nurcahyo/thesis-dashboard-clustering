@@ -17,4 +17,7 @@ class cluster extends Model
     public function data_pekerja_cluster():HasMany {
         return $this->hasMany(data_pekerja_cluster::class, 'cluster', 'cluster');
     }
+    public function iterasi_jarak_default():HasMany {
+        return $this->hasMany(iterasi_jarak_default::class, 'cluster', 'cluster');
+    }
 }

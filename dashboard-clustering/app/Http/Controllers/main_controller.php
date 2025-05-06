@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\cluster;
 use App\Models\provinsi;
 use Illuminate\Http\Request;
 use App\Models\data_pekerja;
 use App\Models\data_pekerja_cluster;
+use App\Models\iterasi_jarak_default;
+use App\Models\iterasi_sse_default;
+use App\Models\sse_default;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
 
@@ -37,23 +41,43 @@ class main_controller extends Controller
         ];
         $activeMenu = 'lihat_data'; //set menu yang sedang aktif
         $provinsi = provinsi::all();
+        $cluster = cluster::all();
+        $iterasi_jarak_default = iterasi_jarak_default::all();
+        $iterasi_sse_default = iterasi_sse_default::all();
          // dd($provinsi);
-        return view('lihat_data', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'provinsi' => $provinsi]);
+        return view('lihat_data', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'provinsi' => $provinsi, 'cluster' => $cluster, 'iterasi_jarak_default' => $iterasi_jarak_default, 'iterasi_sse_default' => $iterasi_sse_default]);
     }
     public function list_data_pekerja(Request $request){
-        $data_pekerjas = data_pekerja::select('id', 'id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('provinsi');
+        // $data_pekerjas = data_pekerja::select('id', 'id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('provinsi');
+        $data_pekerjas_cluster = data_pekerja_cluster::select('id', 'cluster', 'id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('provinsi', 'cluster');
+        // filter
+        // if ($request->id_provinsi) {
+        //     $p = strval($request->id_provinsi);
+        //     $data_pekerjas->where('id_provinsi',$p);
+        // }
+        if ($request->id_provinsi) {
+            $p = strval($request->id_provinsi);
+            $data_pekerjas_cluster->where('id_provinsi',$p);
+        } 
+        return DataTables::of($data_pekerjas_cluster)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->make(true);
+    }
+    public function list_data_iterasi_default(Request $request){
+        $data_iterasi = iterasi_jarak_default::select('id_iterasi_jarak_default', 'id_provinsi', 'tahun', 'jarak_c1', 'jarak_c2', 'jarak_c3', 'c_terkecil', 'cluster', 'jarak_minimum')->with('provinsi', 'cluster');
         // filter
         if ($request->id_provinsi) {
             $p = strval($request->id_provinsi);
-            $data_pekerjas->where('id_provinsi',$p);
-        }
-        return DataTables::of($data_pekerjas)
+            $data_iterasi->where('id_provinsi',$p);
+        } 
+        return DataTables::of($data_iterasi)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-            ->addColumn('aksi', function ($data_pekerja) { // menambahkan kolom aksi
-                $btn = '<a href="'.url('/lihat_data/' . $data_pekerja->id).'" class="btn btn-info btn-sm">Detail <i class="fas fa-info-circle"></i></a> ';
-                return $btn;
-            })
-            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
+            ->make(true);
+    }
+    public function list_data_sse(Request $request){
+        $data_sse = iterasi_sse_default::select('id_iterasi_sse_default', 'id_iterasi_jarak_default', 'sse')->with('iterasi_jarak_default');
+        return DataTables::of($data_sse)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->make(true);
     }
 

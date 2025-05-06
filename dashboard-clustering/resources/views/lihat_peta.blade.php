@@ -49,10 +49,7 @@
   
                 <div class="info-box-content">
                   <span class="info-box-text">Garis Kemiskinan</span>
-                  <span class="info-box-number">
-                    10
-                    <small>%</small>
-                  </span>
+                  <span class="info-box-number">*ini informasi*<small></small></span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -65,7 +62,7 @@
   
                 <div class="info-box-content">
                   <span class="info-box-text">Upah Minimum</span>
-                  <span class="info-box-number">41,410</span>
+                  <span class="info-box-number">*ini informasi*</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -82,7 +79,7 @@
   
                 <div class="info-box-content">
                   <span class="info-box-text">Pengeluaran</span>
-                  <span class="info-box-number">760</span>
+                  <span class="info-box-number">*ini informasi*</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -95,7 +92,7 @@
   
                 <div class="info-box-content">
                   <span class="info-box-text">Rata-rata Upah</span>
-                  <span class="info-box-number">2,000</span>
+                  <span class="info-box-number">*ini informasi*</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
