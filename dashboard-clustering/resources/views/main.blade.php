@@ -7,8 +7,12 @@
       <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img class="d-block w-100 img-fluid" src="{{asset('img/city.jpg')}}" alt="First slide" style="height: 300px;">
-            {{-- <button class="btn btn-primary" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Tes</button> --}}
+            <img class="d-block w-100 img-fluid" src="{{asset('img/cover_map.jpg')}}" alt="First slide" style="height: 300px; filter: blur(2.5px) brightness(0.7);">
+            <div class="carousel-caption d-none d-md-block text-dark" style="position: absolute; top: 30%; left: 10%; width: 80%; text-align: center;">
+              <h1 class="text-white" style="text-shadow: 2px 2px 4px #000000; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 30px;">
+                Telusuri Peta Interaktif untuk Melihat Cluster Kesejahteraan Pekerja di Seluruh Indonesia 🗺️
+              </h1>
+            </div>
           </div>
           <div class="carousel-item">
             <img class="d-block w-100 img-fluid" src="{{asset('img/city.jpg')}}" alt="Second slide" style="height: 300px;">

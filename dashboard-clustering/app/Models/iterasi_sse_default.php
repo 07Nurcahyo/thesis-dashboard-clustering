@@ -23,4 +23,8 @@ class iterasi_sse_default extends Model
     {
         return $this->belongsTo(iterasi_jarak_default::class, 'id_iterasi_jarak_default', 'id_iterasi_jarak_default');
     }
+    public function iterasi_cluster_baru_default()
+    {
+        return $this->hasMany(iterasi_cluster_baru_default::class, 'id_iterasi_sse_default', 'id_iterasi_sse_default');
+    }
 }

@@ -29,6 +29,7 @@ Route::group(['prefix' => 'lihat_data'], function() {
     Route::get('list', [main_controller::class, 'list_data_pekerja'])->name('list_data_pekerja');
     Route::get('list_data_iterasi_default', [main_controller::class, 'list_data_iterasi_default'])->name('list_data_iterasi_default');
     Route::get('list_data_sse', [main_controller::class, 'list_data_sse'])->name('list_data_sse');
+    Route::get('list_data_cluster_akhir', [main_controller::class, 'list_data_cluster_akhir'])->name('list_data_cluster_akhir');
 });
 
 Route::get('/login_admin', [admin_controller::class, 'login'])->name('login');

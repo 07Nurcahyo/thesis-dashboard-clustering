@@ -107,7 +107,7 @@
 
   <div class="card">
     <div class="card-header d-flex justify-content-center bg-secondary">
-      <h2 class="card-title font-weight-bold" style="font-size: 22px">Iterasi Terakhir</h2>
+      <h2 class="card-title font-weight-bold" style="font-size: 22px">Iterasi Akhir</h2>
     </div>
     <div class="card-body">
       @if (session('success'))
@@ -152,16 +152,43 @@
           </thead>
         </table>
       </div>
-      <hr>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped" id="tabel_data_sse">
-          <thead>
-            <th>SSE</th>
-          </thead>
-        </table>
-      </div>
-
     </div> <!-- /.card-body -->
+  </div> <!-- /.card -->
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title font-weight-bold">Berikut adalah SSE dari iterasi akhir : </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped w-100" id="tabel_data_sse">
+              <thead>
+                <th>SSE</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title font-weight-bold">Berikut adalah data cluster dari iterasi akhir : </div>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped w-auto" id="tabel_data_cluster_akhir">
+              <thead>
+                <th>Cluster</th>
+                <th>Garis Kemiskinan</th>
+                <th>Upah Minimum</th>
+                <th>Pengeluaran</th>
+                <th>Rata-rata Upah</th>
+                <th>Kategori</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   
 </div><!-- /.container-fluid -->
@@ -390,7 +417,6 @@
       },
     });
     $('#id_provinsi_2').on('change',function() {
-      // dataPekerja.ajax.reload(null, false);
       dataPekerjaCluster.ajax.reload();
     });
     $('#buttons_2').html(dataPekerjaCluster.buttons().container());
@@ -452,7 +478,7 @@
           searchable: true
         },
         {
-          data: "cluster.nama_cluster",
+          data: "cluster.cluster",
           className: "text-center",
           orderable: true,
           searchable: true
@@ -510,7 +536,6 @@
       },
     });
     $('#id_provinsi_3').on('change',function() {
-      // dataPekerja.ajax.reload(null, false);
       dataPekerjaCluster.ajax.reload();
     });
     $('#buttons_3').html(dataPekerjaCluster.buttons().container());
@@ -527,6 +552,42 @@
           data: "sse",
           className: "text-center"
         }
+      ],
+      dom: 't', // Hides the "show ... entries", search, and pagination controls
+    });
+
+    var dataPekerjaCluster = $('#tabel_data_cluster_akhir').DataTable({
+      serverSide: false,
+      ajax: {
+        url: "{{ url('/lihat_data/list_data_cluster_akhir') }}",
+        dataType: "json",
+        type: "GET"
+      },
+      columns: [
+        {
+          data: "cluster.cluster",
+          className: "text-center"
+        },
+        {
+          data: "garis_kemiskinan",
+          className: "text-center"
+        },
+        {
+          data: "upah_minimum",
+          className: "text-center"
+        },
+        {
+          data: "pengeluaran",
+          className: "text-center"
+        },
+        {
+          data: "rr_upah",
+          className: "text-center"
+        },
+        {
+          data: "cluster.nama_cluster",
+          className: "text-center"
+        },
       ],
       dom: 't', // Hides the "show ... entries", search, and pagination controls
     });

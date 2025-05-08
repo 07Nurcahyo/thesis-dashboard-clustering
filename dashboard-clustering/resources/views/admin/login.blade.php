@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in</title>
+  <title>Admin Dashboard Clustering</title>
+  <link rel="shortcut icon" href="{{asset('img/employee_data.png')}}" type="image/x-icon">
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -19,19 +20,19 @@
 
   @stack('css')
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page bg-secondary">
 
 <div class="login-box" style="border-radius: 15px; overflow: hidden; width: 900px; margin: auto;">
   <!-- /.login-logo -->
-  <div class="card">
-    <div class="row">
-      <div class="col d-flex justify-content-center align-items-center">
-        <img src="{{ asset('img/employee_data.png') }}" alt="Logo" class="img-fluid" style="width: 90%; height: auto;">
+  <div class="card" style="height: 500px">
+    <div class="row" style="height: 100%;">
+      <div class="col d-flex justify-content-center align-items-center" style="background-color: papayawhip;">
+        <img src="{{ asset('img/admin_icon.png') }}" alt="Logo" class="img-fluid" style="width: 50%; height: auto;">
       </div>
       <div class="col d-flex justify-content-center align-items-center">
         <div class="card-body login-card-body pr-5">
           <div class="login-logo">
-            <a><b class="text-bold">Login Admin</b></a>
+            <a><b class="text-bold text-dark" style="letter-spacing: 2px">Login Admin</b></a>
           </div>
           {{-- <p class="login-box-msg">Login untuk masuk ke halaman admin</p> --}}
           @error('error')
@@ -43,23 +44,23 @@
           <form action="{{ url('proses_login') }}" method="post" id="login_">
             @csrf
             <div class="input-group mb-3">
-              <input type="username" class="form-control" name="username" id="username" placeholder="Username" required>
+              <input type="username" class="form-control" name="username" id="username" placeholder="Username" required style="border-color: black;">
               <div class="input-group-append">
-                <div class="input-group-text">
+                <div class="input-group-text" style="border-color: black;">
                   <span class="fas fa-user"></span>
                 </div>
               </div>
             </div>
             <div class="input-group mb-3">
-              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required style="border-color: black">
               <div class="input-group-append">
-                <div class="input-group-text">
+                <div class="input-group-text" style="border-color: black;">
                   <span class="fas fa-lock"></span>
                 </div>
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block" onclick="loginConfirm('Berhasil login, tunggu sebentar!🗿')">Login</button>
-            <a href="{{ url('/') }}" class="btn btn-warning btn-block">Kembali</a>
+            </div><br>
+            <button type="submit" class="btn btn-outline-success btn-block" onclick="loginConfirm('Berhasil login, tunggu sebentar!🗿')">Login</button>
+            <a href="{{ url('/') }}" class="btn btn-outline-warning btn-block">Kembali</a>
           </form>
         </div>
       </div>

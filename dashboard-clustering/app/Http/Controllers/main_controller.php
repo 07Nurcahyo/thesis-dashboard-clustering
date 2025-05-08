@@ -7,6 +7,7 @@ use App\Models\provinsi;
 use Illuminate\Http\Request;
 use App\Models\data_pekerja;
 use App\Models\data_pekerja_cluster;
+use App\Models\iterasi_cluster_baru_default;
 use App\Models\iterasi_jarak_default;
 use App\Models\iterasi_sse_default;
 use App\Models\sse_default;
@@ -77,6 +78,12 @@ class main_controller extends Controller
     public function list_data_sse(Request $request){
         $data_sse = iterasi_sse_default::select('id_iterasi_sse_default', 'id_iterasi_jarak_default', 'sse')->with('iterasi_jarak_default');
         return DataTables::of($data_sse)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->make(true);
+    }
+    public function list_data_cluster_akhir(Request $request){
+        $data_cluster_akhir = iterasi_cluster_baru_default::select('id_iterasi_cluster_baru_default', 'id_iterasi_sse_default', 'cluster', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('iterasi_sse_default', 'cluster');
+        return DataTables::of($data_cluster_akhir)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->make(true);
     }
