@@ -22,28 +22,59 @@ class admin_controller extends Controller
         return view('admin/login');
     }
 
-    public function proses_login(Request $request){
-        // form username password wajib diisi
+    // public function proses_login(Request $request){
+    //     // form username password wajib diisi
+    //     $request->validate([
+    //         'username' => 'required',
+    //         'password' => 'required'
+    //     ]);
+    //     // ambil data request username dan password saja
+    //     $credential = $request->only('username', 'password');
+    //     if (Auth::attempt($credential)) {
+    //         $user = Auth::user();
+    //         if ($user) {
+    //             // dd($user);
+    //             // $request->session()->regenerate();
+    //             return redirect()->intended('/admin');
+    //         }
+    //         // return redirect()->intended('/');
+    //     } else {
+    //         return redirect('login_admin')
+    //             ->withInput()
+    //             ->withErrors(['error' => 'Pastikan kembali username dan password yang dimasukkan sudah benar']);
+    //     }
+    // }
+    public function proses_login(Request $request)
+    {
+        // Validasi form username dan password
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
-        // ambil data request username dan password saja
-        $credential = $request->only('username', 'password');
-        if (Auth::attempt($credential)) {
-            $user = Auth::user();
-            if ($user) {
-                // dd($user);
-                // $request->session()->regenerate();
+        // Ambil data username dan password
+        $credentials = $request->only('username', 'password');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            if ($request->ajax()) {
+                return response()->json(['status' => 'success']);
+            } else {
                 return redirect()->intended('/admin');
             }
-            // return redirect()->intended('/');
         } else {
-            return redirect('login_admin')
-                ->withInput()
-                ->withErrors(['error' => 'Pastikan kembali username dan password yang dimasukkan sudah benar']);
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Username atau Password salah!'
+                ]);
+            } else {
+                return redirect('login_admin')
+                    ->withInput()
+                    ->withErrors(['error' => 'Pastikan kembali username dan password yang dimasukkan sudah benar']);
+            }
         }
     }
+
 
     public function logout(Request $request){
         // logout harus menghapus session
