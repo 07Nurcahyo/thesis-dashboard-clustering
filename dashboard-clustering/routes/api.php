@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin_controller;
 use App\Http\Controllers\main_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,3 +31,5 @@ Route::get('getLinePengeluaran', [main_controller::class, 'getLinePengeluaran'])
 Route::get('getLineRRU', [main_controller::class, 'getLineRRU']);
 
 Route::get('getDataPeta', [main_controller::class, 'getDataPeta']);
+
+Route::delete('deleteDataPekerja/{id}', [admin_controller::class, 'deleteDataPekerja']);

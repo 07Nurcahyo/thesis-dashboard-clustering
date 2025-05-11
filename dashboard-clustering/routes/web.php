@@ -42,6 +42,17 @@ Route::group(['middleware' => ['auth']], function() {
         
         Route::group(['prefix' => 'admin'], function() {
             Route::get('/', [admin_controller::class, 'index']);
+            Route::get('/dashboard', [admin_controller::class, 'index']);
+            Route::get('/kelola_data', [admin_controller::class, 'kelola_data']);
+                Route::get('list_data_pekerja', [admin_controller::class, 'list_data_pekerja'])->name('list_data_pekerja');
+                Route::get('/create', [admin_controller::class, 'create_data_pekerja'])->name('create_data_pekerja');
+                Route::post('/preview_csv', [admin_controller::class, 'preview_csv']);
+                Route::post('/import_csv', [admin_controller::class, 'import_csv']);
+                Route::post('/store_data_pekerja', [admin_controller::class, 'store_data_pekerja'])->name('store_data_pekerja');
+                Route::get('/{id}/edit_data_pekerja', [admin_controller::class, 'edit_data_pekerja'])->name('edit_data_pekerja');
+                Route::get('/{id}/edit-json', [admin_controller::class, 'edit_json']);
+                Route::put('/{id}', [admin_controller::class, 'update_data_pekerja'])->name('update_data_pekerja');
+                Route::delete('/{id}', [admin_controller::class, 'destroy_data_pekerja'])->name('destroy_data_pekerja');
         });
 
     });

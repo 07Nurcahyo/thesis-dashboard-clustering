@@ -153,7 +153,8 @@ $(function () {
       const chartConfigs = [
             {
                 canvasId: 'garisKemiskinanChart',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataGK',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataGK',
+                apiUrl: '/api/getDataGK',
                 labelKey: 'garis_kemiskinan',
                 displayLabel: 'Garis Kemiskinan',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -161,7 +162,8 @@ $(function () {
             },
             {
                 canvasId: 'upahMinimumChart',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataUMP',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataUMP',
+                apiUrl: '/api/getDataUMP',
                 labelKey: 'upah_minimum',
                 displayLabel: 'Upah Minimum',
                 backgroundColor: 'rgba(255, 206, 86, 0.2)',
@@ -169,7 +171,8 @@ $(function () {
             },
             {
                 canvasId: 'pengeluaranChart',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataPengeluaran',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataPengeluaran',
+                apiUrl: '/api/getDataPengeluaran',
                 labelKey: 'pengeluaran',
                 displayLabel: 'Pengeluaran',
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
@@ -177,7 +180,8 @@ $(function () {
             },
             {
                 canvasId: 'rataRataUpahChart',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataRRU',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataRRU',
+                apiUrl: '/api/getDataRRU',
                 labelKey: 'rr_upah',
                 displayLabel: 'Rata-Rata Upah',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -268,7 +272,8 @@ $(function () {
         const chartConfigs = [
             {
                 canvasId: 'lineChartGK',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineGK',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineGK',
+                apiUrl: '/api/getLineGK',
                 labelKey: 'garis_kemiskinan',
                 displayLabel: 'Garis Kemiskinan',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -276,7 +281,8 @@ $(function () {
             },
             {
                 canvasId: 'lineChartUMP',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineUMP',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineUMP',
+                apiUrl: '/api/getLineUMP',
                 labelKey: 'upah_minimum',
                 displayLabel: 'Upah Minimum',
                 backgroundColor: 'rgba(255, 206, 86, 0.2)',
@@ -284,7 +290,8 @@ $(function () {
             },
             {
                 canvasId: 'lineChartPengeluaran',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLinePengeluaran',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLinePengeluaran',
+                apiUrl: '/api/getLinePengeluaran',
                 labelKey: 'pengeluaran',
                 displayLabel: 'Pengeluaran',
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
@@ -292,7 +299,8 @@ $(function () {
             },
             {
                 canvasId: 'lineChartRRU',
-                apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineRRU',
+                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineRRU',
+                apiUrl: '/api/getLineRRU',
                 labelKey: 'rr_upah',
                 displayLabel: 'Rata-Rata Upah',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',

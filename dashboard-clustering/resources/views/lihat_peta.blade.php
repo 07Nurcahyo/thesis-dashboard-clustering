@@ -182,7 +182,8 @@ jQuery(document).ready(function() {
     let tahun = jQuery("#tahun").val();
 
     jQuery.ajax({
-        url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+        // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+        url: "/api/getDataPeta",
         method: "GET",
         data: { tahun: jQuery("#tahun").val() },
         success: function(data) {
@@ -223,7 +224,8 @@ jQuery(document).ready(function() {
                     console.log(region);
                     var tahun = jQuery("#tahun").val();
                     jQuery.ajax({
-                        url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+                        // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+                        url: "/api/getDataPeta",
                         method: "GET",
                         data: { tahun: tahun },
                         success: function(data) {
@@ -283,119 +285,6 @@ jQuery(document).ready(function() {
         }
     });
     
-
-    // jQuery('#vmap').vectorMap(
-    // {
-    //     map: 'indonesia_id',
-    //     backgroundColor: '#a5bfdd',
-    //     borderColor: 'black',
-    //     borderOpacity: 0.25,
-    //     borderWidth: 1,
-    //     color: 'green',
-    //     enableZoom: true,
-    //     hoverColor: '#c9dfaf',
-    //     hoverOpacity: null,
-    //     normalizeFunction: 'linear',
-    //     scaleColors: ['#b6d6ff', '#005ace'],
-    //     selectedColor: '#c9dfaf',
-    //     selectedRegions: null,
-    //     showTooltip: false,
-    //     onRegionClick: function(element, code, region)
-    //         {
-    //             var tahun = jQuery("#tahun").val(); // ambil tahun yang dipilih
-
-    //             jQuery.ajax({
-    //                 url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
-    //                 method: "GET",
-    //                 data: { tahun: tahun },
-    //                 success: function(data) {
-    //                     let found = data.find(item => item.nama_provinsi.toUpperCase() === region.toUpperCase());
-
-    //                     if (found) {
-    //                         jQuery("#provinsiName").text(found.nama_provinsi);
-    //                         jQuery("#clusterName").text(found.nama_cluster);
-    //                         jQuery("#year").text(found.tahun);
-    //                         jQuery("#garisKemiskinan").text(found.garis_kemiskinan);
-    //                         jQuery("#upahMinimum").text(found.upah_minimum);
-    //                         jQuery("#pengeluaran").text(found.pengeluaran);
-    //                         jQuery("#rataRataUpah").text(found.rr_upah);
-
-    //                         jQuery("#modalInfoProvinsi").modal("show");
-    //                     } else {
-    //                         alert("Data untuk " + region + " tidak ditemukan.");
-    //                     }
-
-    //                     // Hapus chart sebelumnya jika ada
-    //                     if (window.myChart) {
-    //                         window.myChart.destroy();
-    //                     }
-    //                     // Buat chart baru
-    //                     let ctx = document.getElementById('chartProvinsi').getContext('2d');
-    //                     window.myChart = new Chart(ctx, {
-    //                         type: 'horizontalBar',
-    //                         data: {
-    //                             labels: ['', '', '', ''],
-    //                             datasets: [{
-    //                                 label: [],
-    //                                 data: [
-    //                                     found.garis_kemiskinan,
-    //                                     found.upah_minimum,
-    //                                     found.pengeluaran,
-    //                                     found.rr_upah
-    //                                 ],
-    //                                 backgroundColor: [
-    //                                     '#dc3545',
-    //                                     '#ffc107',
-    //                                     '#28a745',
-    //                                     '#17a2b8'
-    //                                 ]
-    //                             }]
-    //                         },
-    //                         options: {
-    //                             responsive: true,
-    //                             scales: {
-    //                                 y: {
-    //                                     beginAtZero: true,
-    //                                     display: true,
-    //                                 }
-    //                             },
-    //                             legend: {
-    //                                 display: false
-    //                             }
-    //                         }
-    //                     });
-
-    //                 },
-    //                 error: function() {
-    //                     alert("Gagal mengambil data.");
-    //                 },
-    //             });
-    //         },
-    //         // hover
-    //         // onRegionOver: function(event, code, region) {
-    //         //     let tahun = jQuery("#tahun").val();
-
-    //         //     jQuery.ajax({
-    //         //         url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
-    //         //         method: "GET",
-    //         //         data: { tahun: tahun },
-    //         //         success: function(data) {
-    //         //             let found = data.find(item => item.nama_provinsi.toUpperCase() === region.toUpperCase());
-
-    //         //             if (found) {
-    //         //                 jQuery('#vmap').attr('data-original-title',
-    //         //                 `${region}
-    //         //                     Garis Kemiskinan: ${found.garis_kemiskinan}
-    //         //                     Upah Minimum: ${found.upah_minimum}
-    //         //                     Pengeluaran: ${found.pengeluaran}
-    //         //                     Rata-rata Upah: ${found.rr_upah}`
-    //         //                 ).tooltip('show');
-    //         //             }
-    //         //         }
-    //         //     });
-    //         // },
-
-    // });
 });
 </script>
 @endpush

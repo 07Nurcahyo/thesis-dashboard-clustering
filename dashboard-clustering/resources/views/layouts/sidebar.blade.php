@@ -15,7 +15,7 @@
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{url('admin/dashboard')}}" class="nav-link {{ ($activeMenu == 'dashboard')? 'active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Dashboard
@@ -85,11 +85,10 @@
         </li> --}}
         <li class="nav-header">EXAMPLES</li>
         <li class="nav-item">
-          <a href="../calendar.html" class="nav-link">
-            <i class="nav-icon far fa-calendar-alt"></i>
+          <a href="{{url('admin/kelola_data')}}" class="nav-link {{ ($activeMenu == 'kelola_data')? 'active' : '' }}">
+            <i class="nav-icon fas fa-copy"></i>
             <p>
-              Calendar
-              <span class="badge badge-info right">2</span>
+              Kelola Data
             </p>
           </a>
         </li>
