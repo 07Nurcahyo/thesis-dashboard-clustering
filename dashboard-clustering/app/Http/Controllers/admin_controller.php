@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\cluster;
 use App\Models\data_pekerja;
 use App\Models\data_pekerja_cluster;
+use App\Models\iterasi_cluster_awal;
+use App\Models\iterasi_cluster_baru;
+use App\Models\iterasi_jarak;
 use App\Models\iterasi_jarak_default;
+use App\Models\iterasi_sse;
 use App\Models\iterasi_sse_default;
 use App\Models\provinsi;
 use Illuminate\Http\Request;
@@ -14,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class admin_controller extends Controller
 {
@@ -27,7 +32,13 @@ class admin_controller extends Controller
             'title' => ''
         ];
         $activeMenu = 'dashboard'; //set menu yang sedang aktif
-        return view('admin/main', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        $provinsi = Provinsi::all();
+        $data_pekerja = data_pekerja::all();
+        $tahunList = data_pekerja::select('tahun')->distinct()->orderBy('tahun', 'desc')->pluck('tahun');
+        $provinsiList = provinsi::whereIn('id_provinsi', data_pekerja::select('id_provinsi')->distinct())
+                    ->orderBy('nama_provinsi')
+                    ->pluck('nama_provinsi', 'id_provinsi');
+        return view('admin/main', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'provinsi' => $provinsi, 'data_pekerja' => $data_pekerja, 'tahunList' => $tahunList, 'provinsiList' => $provinsiList]);
     }
 
     public function login(){
@@ -121,16 +132,6 @@ class admin_controller extends Controller
             $p = strval($request->id_provinsi);
             $data_pekerjas->where('id_provinsi',$p);
         } 
-        // return DataTables::of($data_pekerjas)
-        //     ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-        //     ->addColumn('aksi', function ($data_pekerja) { // menambahkan kolom aksi
-        //         // $btn = '<a href="'.url('/admin/' . $data_pekerja->id . '/edit').'" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> ';
-        //         $btn = '<button class="btn btn-warning btn-sm btn-edit" data-id="'.$data_pekerja->id.'"><i class="fas fa-edit"></i></button> ';
-        //         $btn .= '<form class="d-inline-block" method="POST" action="'.url('/admin/'.$data_pekerja->id).'" id="delete_'.$data_pekerja->id.'">'. csrf_field() . method_field('DELETE') .'<button type="" class="btn btn-danger btn-sm" onclick="return deleteConfirm(\''.$data_pekerja->id.'\');"><i class="fas fa-trash-alt"></i></button></form>';
-        //         return $btn;
-        //     })
-        //     ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
-        //     ->make(true);
         return DataTables::of($data_pekerjas)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addColumn('aksi', function ($data_pekerja) { // menambahkan kolom aksi
@@ -260,6 +261,91 @@ class admin_controller extends Controller
             return redirect('/admin/kelola_data')->with('error', 'Data buku gagal di hapus karena masih terdapat table lain terkait dengan data ini');
         }
     }
+
+    // Clustering
+    public function clustering(){
+        $breadcrumb = (object) [
+            'title' => 'Clustering',
+            'list' => ['Home', 'K-Means Clustering']
+        ];
+        $page = (object) [
+            'title' => ''
+        ];
+        $activeMenu = 'clustering'; //set menu yang sedang aktif
+        $data_pekerja = data_pekerja::all();
+        $provinsi = provinsi::all();
+        $iterasi_cluster_awal = iterasi_cluster_awal::all();
+        $cluster = cluster::all();
+        $iterasi_jarak = iterasi_jarak::all();
+        return view('admin/clustering', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'data_pekerja' => $data_pekerja, 'provinsi' => $provinsi, 'iterasi_cluster_awal' => $iterasi_cluster_awal, 'cluster' => $cluster ,'iterasi_jarak' => $iterasi_jarak]);
+    }
+    public function list_data_cluster_awal(Request $request){
+        $data_cluster_awals = iterasi_cluster_awal::select('id_iterasi_cluster_awal', 'cluster', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('cluster')->get();
+        return DataTables::of($data_cluster_awals)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->addColumn('aksi', function ($data_cluster_awal) { // menambahkan kolom aksi
+                // $btn = '<a href="'.url('/admin/' . $data_pekerja->id . '/edit').'" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a> ';
+                $btn = '<button class="btn btn-warning btn-sm btn-edit" data-id="'.$data_cluster_awal->id_iterasi_cluster_awal.'"><i class="fas fa-edit"></i></button> ';
+                $btn .= '<form class="d-inline-block" method="POST" action="'.url('/admin/'.$data_cluster_awal->id_iterasi_cluster_awal).'" id="delete_'.$data_cluster_awal->id_iterasi_cluster_awal.'">'. csrf_field() . method_field('DELETE') .'<button type="" class="btn btn-danger btn-sm" onclick="return deleteConfirm(\''.$data_cluster_awal->id_iterasi_cluster_awal.'\');"><i class="fas fa-trash-alt"></i></button></form>';
+                return $btn;
+            })
+            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
+            ->make(true);
+    }
+    public function simpanDataAcak(Request $request)
+    {
+        // 1. Kosongkan tabel dulu
+        iterasi_cluster_awal::truncate();
+
+        // 2. Masukkan 3 baris data dengan cluster 1, 2, dan 3
+        for ($i = 1; $i <= 3; $i++) {
+            iterasi_cluster_awal::create([
+                'id_data_pekerja' => 1, // bisa diganti nanti kalau dinamis
+                'cluster' => $i, // Mengisi cluster dengan angka 1, 2, atau 3
+                'garis_kemiskinan' => rand(1000000, 9999999),
+                'upah_minimum' => rand(1000000, 9999999),
+                'pengeluaran' => rand(1000000, 9999999),
+                'rr_upah' => rand(10000, 99999),
+            ]);
+        }
+
+        return response()->json(['status' => 'success', 'message' => '3 data dengan cluster 1, 2, 3 berhasil disimpan setelah reset.']);
+    }
+
+    public function list_data_iterasi(Request $request){
+        $data_iterasi = iterasi_jarak::select('id_iterasi_jarak', 'id_provinsi','cluster', 'tahun', 'jarak_c1', 'jarak_c2', 'jarak_c3', 'c_terkecil', 'cluster', 'jarak_minimum')->with('provinsi','cluster')->get();
+        return DataTables::of($data_iterasi)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
+            ->make(true);
+    }
+    public function list_iterasi_sse(Request $request){
+        $data_sse = iterasi_sse::select('id_iterasi_sse', 'sse')->get();
+        return DataTables::of($data_sse)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->make(true);
+    }
+    public function list_iterasi_cluster_baru(Request $request){
+        $data_iterasi_cluster_baru = iterasi_cluster_baru::select('id_iterasi_cluster_baru', 'cluster', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('cluster')->get();
+        return DataTables::of($data_iterasi_cluster_baru)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->make(true);
+    }
+    public function list_data_hasil_akhir(Request $request){
+        // $data_cluster_akhir = data_pekerja_cluster::select('id', 'cluster', 'id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('cluster','provinsi')->get();
+        $data_cluster_akhir = data_pekerja_cluster::select('data_pekerja_cluster.id', 'data_pekerja_cluster.cluster', 'data_pekerja_cluster.id_provinsi', 'tahun', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('provinsi', 'cluster')->join('provinsi', 'data_pekerja_cluster.id_provinsi', '=', 'provinsi.id_provinsi')->orderBy('nama_provinsi', 'asc')->orderBy('tahun', 'asc');
+        if ($request->id_provinsi) {
+            $p = strval($request->id_provinsi);
+            // $data_cluster_akhir->where('id_provinsi',$p);
+            $data_cluster_akhir->where('data_pekerja_cluster.id_provinsi', $p);
+        }
+        return DataTables::of($data_cluster_akhir)
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+            ->make(true);
+    }
+
+
+
 
     // api
     public function deleteDataPekerja(String $id){

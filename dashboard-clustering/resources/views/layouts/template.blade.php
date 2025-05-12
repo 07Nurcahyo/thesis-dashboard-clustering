@@ -33,10 +33,10 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-primary elevation-4 sticky" style="position: fixed; overflow-y: scroll; top: 0; bottom: 0">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
-      <img src="{{asset('img/data_pekerja.jpg')}}" alt ="Clustering Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{ asset('img/admin_icon.png') }}" alt ="Clustering Logo" class="brand-image img-rectangle elevation-3" style="opacity: .8">
       <span class="brand-text">Admin</span>
     </a>
 

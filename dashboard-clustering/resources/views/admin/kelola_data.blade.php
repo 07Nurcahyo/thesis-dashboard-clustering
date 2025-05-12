@@ -3,15 +3,12 @@
 @section('content')
     <div class="card card-primary">
         <div class="card-header">
-            <h2 class="card-title">Data Kesejahteraan Pekerja di Indonesia</h2>
+            <h2 class="card-title font-weight-bold" style="font-size: 22px">Data Kesejahteraan Pekerja di Indonesia</h2>
             <div class="card-tools">
-                {{-- <button class="btn btn-success btn-sm m-0 p-0" onclick="window.location.href='{{ url('admin/create') }}'">
-                    <i class="fas fa-plus"></i>Tambah Data Manual
-                </button> --}}
-                <button class="btn btn-success btn-sm m-0 p-0" data-toggle="modal" data-target="#jumlahInputModal">
+                <button class="btn btn-success m-0 p-0 mr-3 p-1" data-toggle="modal" data-target="#jumlahInputModal">
                     <i class="fas fa-plus"></i> Tambah Data Manual
                 </button>
-                <button class="btn btn-success btn-sm m-0 p-0" data-toggle="modal" data-target="#uploadCsvModal">
+                <button class="btn btn-success m-0 p-0 p-1" data-toggle="modal" data-target="#uploadCsvModal">
                     <i class="fas fa-plus"></i> Tambah Data CSV
                 </button>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -46,23 +43,21 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped w-100" id="tabel_data_pekerja">
-                    <thead>
-                        <tr style="text-align: center;">
-                        {{-- <th>No</th> --}}
-                        <th>ID</th>
-                        <th>Provinsi</th>
-                        <th>Tahun</th>
-                        <th>Garis Kemiskinan</th>
-                        <th>Upah Minimum</th>
-                        <th>Pengeluaran</th>
-                        <th>Rata-rata Upah</th>
-                        <th>Aksi</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+            <table class="table table-bordered table-striped w-100 table-sm" id="tabel_data_pekerja">
+                <thead>
+                    <tr style="text-align: center;">
+                    {{-- <th>No</th> --}}
+                    <th>ID</th>
+                    <th>Provinsi</th>
+                    <th>Tahun</th>
+                    <th>Garis Kemiskinan</th>
+                    <th>Upah Minimum</th>
+                    <th>Pengeluaran</th>
+                    <th>Rata-rata Upah</th>
+                    <th>Aksi</th>
+                    </tr>
+                </thead>
+            </table>
 
         </div> <!-- /.card-body -->
         <!-- Modal Jumlah Input -->
@@ -110,15 +105,17 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h5 class="modal-title">Upload CSV</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                        <h5 class="modal-title">Upload CSV</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body" style="overflow-y: scroll; max-height: 450px;">
-                    <input type="file" name="csv_file" id="csv_file" accept=".csv,.xlsx" class="form-control mb-3" required>
-                    <div id="csv_preview_container"></div>
+                        <p class="badge badge-warning" style="font-size: 18px">Silakan pilih file CSV atau Excel untuk diunggah. Pastikan formatnya sesuai dengan yang diharapkan.</p>
+                        <p class="badge badge-warning" style="font-size: 18px">Centang untuk memilih data yang akan dimasukkan</p>
+                        <input type="file" name="csv_file" id="csv_file" accept=".csv,.xlsx" class="form-control mb-3" required>
+                        <div id="csv_preview_container"></div>
                     </div>
                     <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                        <button type="submit" class="btn btn-primary">Simpan Data</button>
                     </div>
                 </div>
                 </form>
@@ -441,8 +438,6 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         // url: 'http://localhost/Skripsi/dashboard-clustering/public/api/deleteDataPekerja/' + id,
-                        // url: '{{ url('admin/delete_data_pekerja') }}',
-                        // url: `/admin/${id}`,
                         url: `/api/deleteDataPekerja/${id}`,
                         type: 'DELETE',
                         success: function(response) {
@@ -450,7 +445,9 @@
                                 Swal.fire({
                                     title: "Terhapus!",
                                     text: "Data pekerja telah terhapus!",
-                                    icon: "success"
+                                    icon: "success",
+                                    showConfirmButton: false,
+                                    timer: 1500
                                 }).then((result) => {
                                     dataPekerja.ajax.reload();
                                 });
@@ -502,10 +499,6 @@
             }
         });
     });
-
-
-
-
 
 </script>
 @endpush

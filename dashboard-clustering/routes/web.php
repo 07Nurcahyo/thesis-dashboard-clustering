@@ -53,6 +53,13 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('/{id}/edit-json', [admin_controller::class, 'edit_json']);
                 Route::put('/{id}', [admin_controller::class, 'update_data_pekerja'])->name('update_data_pekerja');
                 Route::delete('/{id}', [admin_controller::class, 'destroy_data_pekerja'])->name('destroy_data_pekerja');
+            Route::get('/clustering', [admin_controller::class, 'clustering']);
+                Route::get('list_data_cluster_awal', [admin_controller::class, 'list_data_cluster_awal'])->name('list_data_cluster_awal');
+                Route::post('cluster-awal/acak', [admin_controller::class, 'simpanDataAcak'])->name('cluster-awal.acak');
+                Route::get('list_data_iterasi', [admin_controller::class, 'list_data_iterasi'])->name('list_data_iterasi');
+                Route::get('list_iterasi_sse', [admin_controller::class, 'list_iterasi_sse'])->name('list_iterasi_sse');
+                Route::get('list_iterasi_cluster_baru', [admin_controller::class, 'list_iterasi_cluster_baru'])->name('list_iterasi_cluster_baru');
+                Route::get('list_data_hasil_akhir', [admin_controller::class, 'list_data_hasil_akhir'])->name('list_data_hasil_akhir');
         });
 
     });
