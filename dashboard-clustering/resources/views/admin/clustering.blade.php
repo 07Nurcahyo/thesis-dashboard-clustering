@@ -38,8 +38,8 @@
                 <button type="button" class="btn m-0 p-0 mr-3 p-1 btn-warning" id="btnAcak">
                     <i class="fas fa-random"></i> Tentukan Acak
                 </button>
-                <button type="button" class="btn m-0 p-0 mr-3 p-1 btn-warning">
-                    <i class="fas fa-plus-square"></i> Ganti Manual
+                <button type="button" class="btn m-0 p-0 mr-3 p-1 btn-warning" data-toggle="modal" data-target="#gantiManual">
+                    <i class="fas fa-edit"></i> Ganti Manual
                 </button>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
@@ -204,6 +204,93 @@
         </div> <!-- /.card-body -->
     </div>
 
+    {{-- Modal Ganti Manual --}}
+    <div class="modal fade" id="gantiManual" tabindex="-1" role="dialog" aria-labelledby="gantiManualLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <form id="formGantiManual" method="POST" action="{{ route('ganti.manual.cluster') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ganti Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Informasi</strong> Batasan input:
+                        <ul>
+                            <li>Garis Kemiskinan, Upah Minimum, Pengeluaran: Maksimal 7 digit.</li>
+                            <li>RR Upah: Maksimal 5 digit.</li>
+                        </ul></p>
+                        @for($i = 0; $i < 3; $i++)
+                            <h6 class="font-weight-bold mt-3">Cluster {{ $i+1 }}</h6>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>Garis Kemiskinan</label>
+                                    <input type="number" step="0.01" name="data[{{ $i }}][garis_kemiskinan]" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Upah Minimum</label>
+                                    <input type="number" step="0.01" name="data[{{ $i }}][upah_minimum]" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Pengeluaran</label>
+                                    <input type="number" step="0.01" name="data[{{ $i }}][pengeluaran]" class="form-control" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>RR Upah</label>
+                                    <input type="number" step="0.01" name="data[{{ $i }}][rr_upah]" class="form-control" required>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Modal edit cluster awal --}}
+    <div class="modal fade" id="editClusterAwal" tabindex="-1" role="dialog" aria-labelledby="editClusterAwalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="formEditClusterAwal" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Cluster Awal</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id_data_pekerja" id="edit_id_data_pekerja">
+                        <div class="form-group">
+                            <label>Cluster</label>
+                            <input type="text" class="form-control" name="cluster" id="edit_cluster" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Garis Kemiskinan</label>
+                            <input type="number" step="0.01" class="form-control" name="garis_kemiskinan" id="edit_garis_kemiskinan" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Upah Minimum</label>
+                            <input type="number" step="0.01" class="form-control" name="upah_minimum" id="edit_upah_minimum" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pengeluaran</label>
+                            <input type="number" step="0.01" class="form-control" name="pengeluaran" id="edit_pengeluaran" required>
+                        </div>
+                        <div class="form-group">
+                            <label>RR Upah</label>
+                            <input type="number" step="0.01" class="form-control" name="rr_upah" id="edit_rr_upah" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('css')
@@ -264,7 +351,9 @@
                     orderable: true,
                     searchable: true
                 }
-            ]
+            ],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[ 1, "asc" ], [ 2, "asc" ]],
         });
 
         var dataClusterAwal = $('#tabel_data_cluster_awal').DataTable({
@@ -276,8 +365,8 @@
             },
             columns: [
                 {
-                    // data: "DT_RowIndex",
-                    data: "id_iterasi_cluster_awal",
+                    data: "DT_RowIndex",
+                    // data: "id_iterasi_cluster_awal",
                     className: "text-center",
                     orderable: false,
                     searchable: true
@@ -527,37 +616,6 @@
         });
         
     });
-    
-    // $('#btnTentukanAcak').on('click', function () {
-    //     // Buat array acak
-    //     const randomCluster = [];
-    //     for (let i = 1; i <= 3; i++) {
-    //         randomCluster.push({
-    //             cluster: 'C' + i,
-    //             garis_kemiskinan: Math.floor(1000000 + Math.random() * 9000000), // 7 digit
-    //             upah_minimum: Math.floor(1000000 + Math.random() * 9000000),     // 7 digit
-    //             pengeluaran: Math.floor(1000000 + Math.random() * 9000000),      // 7 digit
-    //             rr_upah: Math.floor(10000 + Math.random() * 90000)               // 5 digit
-    //         });
-    //     }
-
-    //     // Kirim ke backend (jika Anda ingin simpan ke DB), atau langsung tampilkan di tabel sementara
-    //     // Contoh: tampilkan ke tabel dengan DataTable.clear() dan .rows.add()
-    //     let table = $('#tabel_data_cluster_awal').DataTable();
-    //     table.clear(); // kosongkan
-    //     randomCluster.forEach((data, idx) => {
-    //         table.row.add({
-    //             id_iterasi_cluster_awal: idx + 1,
-    //             cluster: { cluster: data.cluster },
-    //             garis_kemiskinan: data.garis_kemiskinan,
-    //             upah_minimum: data.upah_minimum,
-    //             pengeluaran: data.pengeluaran,
-    //             rr_upah: data.rr_upah,
-    //             aksi: '<button class="btn btn-danger btn-sm">Hapus</button>'
-    //         });
-    //     });
-    //     table.draw();
-    // });
     $('#btnAcak').on('click', function () {
         $.ajax({
             url: '{{ route('cluster-awal.acak') }}',
@@ -575,7 +633,62 @@
         });
     });
 
+    // Ganti Manual //
+    // Modal reset setelah close
+    // $('#gantiManual').on('hidden.bs.modal', function () {
+    //     $(this).find('form')[0].reset();
+    // });
+    // Validasi input agar tidak melebihi jumlah digit
+    $('#formGantiManual').on('submit', function (event) {
+        let messages = [];
+        // Validasi ID Pekerja, Garis Kemiskinan, Upah Minimum, Pengeluaran (max 7 digit)
+        $('input[name*="garis_kemiskinan"], input[name*="upah_minimum"], input[name*="pengeluaran"]').each(function() {
+            let value = $(this).val();
+            if (value.length > 7) {
+                messages.push("Maksimal 7 digit untuk ID Pekerja, Garis Kemiskinan, Upah Minimum, dan Pengeluaran.");
+            }
+        });
+        // Validasi RR Upah (max 5 digit)
+        $('input[name*="rr_upah"]').each(function() {
+            let value = $(this).val();
+            if (value.length > 5) {
+                messages.push("Maksimal 5 digit untuk RR Upah.");
+            }
+        });
+        if (messages.length > 0) {
+            alert(messages.join("\n"));
+            event.preventDefault();
+            return false;
+        }
+    });
 
+    // Edit Cluster Awal //
+    $(document).on('click', '.btn-edit', function () {
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: '/admin/edit-cluster-awal/' + id,
+            type: 'GET',
+            success: function (data) {
+                // Isi data ke dalam form modal
+                $('#edit_id_data_pekerja').val(data.data_cluster_awal.id_data_pekerja);
+                $('#edit_cluster').val(data.data_cluster_awal.cluster);
+                $('#edit_garis_kemiskinan').val(data.data_cluster_awal.garis_kemiskinan);
+                $('#edit_upah_minimum').val(data.data_cluster_awal.upah_minimum);
+                $('#edit_pengeluaran').val(data.data_cluster_awal.pengeluaran);
+                $('#edit_rr_upah').val(data.data_cluster_awal.rr_upah);
+
+                // Set action form
+                $('#formEditClusterAwal').attr('action', '/admin/update-cluster-awal/' + id);
+
+                // Tampilkan modal
+                $('#editClusterAwal').modal('show');
+            },
+            error: function () {
+                alert('Gagal mengambil data.');
+            }
+        });
+    });
 
 </script>
 @endpush

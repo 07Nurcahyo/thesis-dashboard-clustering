@@ -130,7 +130,7 @@ class admin_controller extends Controller
         // filter
         if ($request->id_provinsi) {
             $p = strval($request->id_provinsi);
-            $data_pekerjas->where('id_provinsi',$p);
+            $data_pekerjas->where('data_pekerja.id_provinsi',$p);
         } 
         return DataTables::of($data_pekerjas)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
@@ -292,6 +292,56 @@ class admin_controller extends Controller
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
             ->make(true);
     }
+    // public function edit_cluster_awal($id){
+    //     $breadcrumb = (object) [
+    //         'title' => 'Edit Cluster Awal',
+    //         'list' => ['Home', 'K-Means Clustering', 'Edit Cluster Awal']
+    //     ];
+    //     $page = (object) [
+    //         'title' => ''
+    //     ];
+    //     $activeMenu = 'clustering'; //set menu yang sedang aktif
+    //     $data_cluster_awal = iterasi_cluster_awal::find($id);
+    //     $provinsi = provinsi::all();
+    //     return view('admin/edit_cluster_awal', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'provinsi' => $provinsi, 'data_cluster_awal' => $data_cluster_awal]);
+    // }
+    public function edit_cluster_awal($id)
+    {
+        $data_cluster_awal = iterasi_cluster_awal::find($id);
+        if ($data_cluster_awal) {
+            return response()->json([
+                'success' => true,
+                'data_cluster_awal' => $data_cluster_awal
+            ]);
+        }
+        return response()->json(['success' => false], 404);
+    }
+    public function update_cluster_awal(Request $request, $id){
+        $data_cluster_awal = iterasi_cluster_awal::find($id);
+        $data_cluster_awal->id_data_pekerja = $request->id_data_pekerja;
+        $data_cluster_awal->cluster = $request->cluster;
+        $data_cluster_awal->garis_kemiskinan = $request->garis_kemiskinan;
+        $data_cluster_awal->upah_minimum = $request->upah_minimum;
+        $data_cluster_awal->pengeluaran = $request->pengeluaran;
+        $data_cluster_awal->rr_upah = $request->rr_upah;
+        if ($data_cluster_awal->save()) {
+            return redirect('/admin/clustering')->with('success', 'Data berhasil diubah');
+        } else {
+            return redirect('/admin/clustering')->with('error', 'Data gagal diubah');
+        }
+    }
+    public function destroy_cluster_awal($id){
+        $check = iterasi_cluster_awal::find($id);
+        if (!$check) {
+            return redirect('/admin/clustering')->with('error', 'Data cluster tidak ditemukan');
+        }
+        try {
+            iterasi_cluster_awal::destroy($id);
+            return redirect('/admin/clustering');
+        } catch (\Illuminate\Database\QueryException $te) {
+            return redirect('/admin/clustering')->with('error', 'Data cluster gagal di hapus karena masih terdapat table lain terkait dengan data ini');
+        }
+    }
     public function simpanDataAcak(Request $request)
     {
         // 1. Kosongkan tabel dulu
@@ -311,7 +361,33 @@ class admin_controller extends Controller
 
         return response()->json(['status' => 'success', 'message' => '3 data dengan cluster 1, 2, 3 berhasil disimpan setelah reset.']);
     }
+    public function gantiManual(Request $request)
+    {
+        $dataBaru = $request->input('data');
 
+        // Validasi jumlah data
+        if (count($dataBaru) !== 3) {
+            return back()->with('error', 'Harus memasukkan tepat 3 data.');
+        }
+
+        // Hapus 3 data awal (opsional: bisa yang terbaru atau random)
+        iterasi_cluster_awal::orderBy('created_at', 'asc')->limit(3)->delete();
+
+        // Simpan data baru
+        $i = 1;
+        foreach ($dataBaru as $item) {
+            iterasi_cluster_awal::create([
+                'id_data_pekerja' => 1,
+                'cluster' => $i++, // atau ambil dari logic sebelumnya
+                'garis_kemiskinan' => $item['garis_kemiskinan'],
+                'upah_minimum' => $item['upah_minimum'],
+                'pengeluaran' => $item['pengeluaran'],
+                'rr_upah' => $item['rr_upah'],
+            ]);
+        }
+
+        return back()->with('success', '3 data berhasil diganti secara manual.');
+    }
     public function list_data_iterasi(Request $request){
         $data_iterasi = iterasi_jarak::select('id_iterasi_jarak', 'id_provinsi','cluster', 'tahun', 'jarak_c1', 'jarak_c2', 'jarak_c3', 'c_terkecil', 'cluster', 'jarak_minimum')->with('provinsi','cluster')->get();
         return DataTables::of($data_iterasi)

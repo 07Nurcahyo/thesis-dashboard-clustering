@@ -56,6 +56,12 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/clustering', [admin_controller::class, 'clustering']);
                 Route::get('list_data_cluster_awal', [admin_controller::class, 'list_data_cluster_awal'])->name('list_data_cluster_awal');
                 Route::post('cluster-awal/acak', [admin_controller::class, 'simpanDataAcak'])->name('cluster-awal.acak');
+                Route::get('edit-cluster-awal/{id}', [admin_controller::class, 'edit_cluster_awal']);
+                Route::put('update-cluster-awal/{id}', [admin_controller::class, 'update_cluster_awal']);
+                Route::delete('/{id}', [admin_controller::class, 'destroy_cluster_awal'])->name('destroy_cluster_awal');
+                // Route::get('/{id}/edit_cluster_awal', [admin_controller::class, 'edit_cluster_awal'])->name('edit_cluster_awal');
+                // Route::put('/{id}', [admin_controller::class, 'update_cluster_awal'])->name('update_cluster_awal');
+                Route::post('ganti-manual-cluster', [admin_controller::class, 'gantiManual'])->name('ganti.manual.cluster');
                 Route::get('list_data_iterasi', [admin_controller::class, 'list_data_iterasi'])->name('list_data_iterasi');
                 Route::get('list_iterasi_sse', [admin_controller::class, 'list_iterasi_sse'])->name('list_iterasi_sse');
                 Route::get('list_iterasi_cluster_baru', [admin_controller::class, 'list_iterasi_cluster_baru'])->name('list_iterasi_cluster_baru');

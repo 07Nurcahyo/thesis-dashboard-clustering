@@ -265,6 +265,7 @@
                     extend: 'pdfHtml5',
                     text: '<i class="fas fa-file-pdf"></i>',
                     titleAttr: 'PDF',
+                    title: 'Data Kesejahteraan Pekerja di Indonesia',
                     className: 'btn btn-danger btn-sm',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5, 6]
@@ -274,6 +275,7 @@
                     extend: 'print',
                     text: '<i class="fas fa-print"></i>',
                     titleAttr: 'Print',
+                    title: 'Data Kesejahteraan Pekerja di Indonesia',
                     className: 'btn btn-info btn-sm',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5, 6]
@@ -464,7 +466,6 @@
                 }
             });
         }
-
     });
 
     // ketika tombol edit diklik
