@@ -18,7 +18,9 @@ class iterasi_cluster_awal extends Model
         'garis_kemiskinan',
         'upah_minimum',
         'pengeluaran',
-        'rr_upah'
+        'rr_upah',
+        'created_at',
+        'updated_at',
     ];
     public function data_pekerja()
     {

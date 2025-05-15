@@ -20,7 +20,9 @@ class iterasi_cluster_baru extends Model
         'garis_kemiskinan',
         'upah_minimum',
         'pengeluaran',
-        'rr_upah'
+        'rr_upah',
+        'created_at',
+        'updated_at',
     ];
 
     public function iterasi_sse_default(): BelongsTo

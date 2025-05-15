@@ -30,10 +30,10 @@
         </div> <!-- /.card-body -->
     </div>
 
-    {{-- Cluster awal --}}
+    {{-- Centroid awal --}}
     <div class="card card-navy">
         <div class="card-header">
-            <h2 class="card-title font-weight-bold" style="font-size: 22px">Cluster Awal</h2>
+            <h2 class="card-title font-weight-bold" style="font-size: 22px">Centroid Awal</h2>
             <div class="card-tools">
                 <button type="button" class="btn m-0 p-0 mr-3 p-1 btn-warning" id="btnAcak">
                     <i class="fas fa-random"></i> Tentukan Acak
@@ -67,8 +67,16 @@
     {{-- Button --}}
     <div class="card" style="background-color: transparent; border-color: transparent">
         <div class="row">
+            {{-- <div class="col">
+                <button type="button" class="btn btn-danger btn-lg btn-block" id="btnJalankanKMeans">
+                    Hapus Data Iterasi
+                </button>
+            </div> --}}
             <div class="col">
-                <button type="button" class="btn btn-danger btn-lg btn-block">Jalankan K-Means Clustering Sekarang</button>
+                {{-- <button type="button" class="btn btn-danger btn-lg btn-block">Jalankan K-Means Clustering Sekarang</button> --}}
+                <button type="button" class="btn btn-danger btn-lg btn-block" id="btnJalankanKMeans">
+                    Jalankan K-Means Clustering Sekarang
+                </button>
             </div>
             <div class="col">
                 <button type="button" class="btn btn-success btn-lg btn-block">Kembalikan ke Data Cluster Tahun 2024</button>
@@ -123,10 +131,10 @@
         </div>
     </div>
 
-    {{-- Cluster baru / akhir --}}
+    {{-- Centroid baru / akhir --}}
     <div class="card card-navy">
         <div class="card-header">
-            <h2 class="card-title font-weight-bold" style="font-size: 22px">Cluster Baru</h2>
+            <h2 class="card-title font-weight-bold" style="font-size: 22px">Centroid Baru</h2>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
@@ -566,7 +574,8 @@
                     searchable: true
                 },
                 {
-                    data: "cluster.nama_cluster",
+                    // data: "cluster.nama_cluster",
+                    data: "cluster.cluster",
                     className: "text-center",
                     orderable: true,
                     searchable: true
@@ -689,6 +698,39 @@
             }
         });
     });
+
+    // K-Means Clustering //
+    $('#btnJalankanKMeans').click(function() {
+        if (confirm("Yakin ingin menjalankan K-Means Clustering sekarang?")) {
+            $.ajax({
+                url: "{{ route('jalankan.kmeans') }}", // route ini harus kamu definisikan
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                beforeSend: function() {
+                    $('#btnJalankanKMeans').html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+                    $('#btnJalankanKMeans').prop('disabled', true);
+                },
+                success: function(res) {
+                    alert('Clustering selesai!');
+                    $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
+
+                    // Reload semua tabel
+                    $('#tabel_data_iterasi').DataTable().ajax.reload();
+                    $('#tabel_data_sse').DataTable().ajax.reload();
+                    $('#tabel_data_cluster_baru').DataTable().ajax.reload();
+                    $('#tabel_hasil').DataTable().ajax.reload();
+                },
+                error: function(err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan.');
+                    $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
+                }
+            });
+        }
+    });
+
 
 </script>
 @endpush

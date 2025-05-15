@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
+use Phpml\Clustering\KMeans;
+use Phpml\Math\Distance\Euclidean;
 
 class admin_controller extends Controller
 {
@@ -292,19 +294,6 @@ class admin_controller extends Controller
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
             ->make(true);
     }
-    // public function edit_cluster_awal($id){
-    //     $breadcrumb = (object) [
-    //         'title' => 'Edit Cluster Awal',
-    //         'list' => ['Home', 'K-Means Clustering', 'Edit Cluster Awal']
-    //     ];
-    //     $page = (object) [
-    //         'title' => ''
-    //     ];
-    //     $activeMenu = 'clustering'; //set menu yang sedang aktif
-    //     $data_cluster_awal = iterasi_cluster_awal::find($id);
-    //     $provinsi = provinsi::all();
-    //     return view('admin/edit_cluster_awal', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'provinsi' => $provinsi, 'data_cluster_awal' => $data_cluster_awal]);
-    // }
     public function edit_cluster_awal($id)
     {
         $data_cluster_awal = iterasi_cluster_awal::find($id);
@@ -418,6 +407,161 @@ class admin_controller extends Controller
         return DataTables::of($data_cluster_akhir)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->make(true);
+    }
+
+    private function hapus()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        data_pekerja_cluster::truncate();
+        iterasi_cluster_baru::truncate();
+        iterasi_sse::truncate();
+        iterasi_jarak::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+
+    public function jalankan()
+    {
+        // DB::beginTransaction();
+        // try{
+            $data = DB::table('data_pekerja')->get()->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'id_provinsi' => $item->id_provinsi,
+                    'tahun' => $item->tahun,
+                    'fitur' => [
+                        (double) $item->garis_kemiskinan,
+                        (double) $item->upah_minimum,
+                        (double) $item->pengeluaran,
+                        (double) $item->rr_upah
+                    ]
+                ];
+            });
+    
+            // Ambil centroid awal dari cluster_awal
+            $clusterAwal = DB::table('iterasi_cluster_awal')->orderBy('cluster')->get();
+            $centroids = [];
+            foreach ($clusterAwal as $item) {
+                $centroids[$item->cluster - 1] = [
+                    (double) $item->garis_kemiskinan,
+                    (double) $item->upah_minimum,
+                    (double) $item->pengeluaran,
+                    (double) $item->rr_upah
+                ];
+            }
+    
+            $maxIterations = 100;
+            $threshold = 0.001;
+
+            for ($iterasi = 1; $iterasi <= $maxIterations; $iterasi++) {
+                $clusters = [[], [], []];
+                $totalSSE = 0;
+    
+                foreach ($data as $point) {
+                    $distances = [];
+                    foreach ($centroids as $centroid) {
+                        $distances[] = $this->euclideanDistance($point['fitur'], $centroid);
+                    }
+    
+                    $minIndex = array_keys($distances, min($distances))[0];
+                    $clusters[$minIndex][] = $point;
+                    $squaredError = pow($distances[$minIndex], 2);
+                    $totalSSE += $squaredError;
+
+                    // Simpan iterasi jarak
+                    $idIterasiJarak = DB::table('iterasi_jarak')->insertGetId([
+                        'id_provinsi' => $point['id_provinsi'],
+                        'tahun' => $point['tahun'],
+                        'jarak_c1' => $distances[0],
+                        'jarak_c2' => $distances[1],
+                        'jarak_c3' => $distances[2],
+                        'c_terkecil' => $distances[$minIndex],
+                        'cluster' => $minIndex + 1,
+                        'jarak_minimum' => $squaredError,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+    
+                }
+                // Simpan SSE
+                DB::table('iterasi_sse')->insert([
+                    'id_iterasi_jarak' => $idIterasiJarak,
+                    'sse' => $squaredError,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+    
+                // Hitung centroid baru
+                $newCentroids = [];
+                foreach ($clusters as $index => $clusterPoints) {
+                    if (count($clusterPoints) === 0) {
+                        $newCentroids[$index] = $centroids[$index];
+                        continue;
+                    }
+    
+                    $sum = array_fill(0, 4, 0);
+                    foreach ($clusterPoints as $point) {
+                        foreach ($point['fitur'] as $i => $val) {
+                            $sum[$i] += $val;
+                        }
+                    }
+    
+                    $newCentroid = array_map(fn($x) => $x / count($clusterPoints), $sum);
+                    $newCentroids[$index] = $newCentroid;
+    
+                    // Simpan cluster baru
+                    $lastSSEId = DB::table('iterasi_sse')->latest('id_iterasi_sse')->value('id_iterasi_sse');
+                    DB::table('iterasi_cluster_baru')->insert([
+                        'id_iterasi_sse' => $lastSSEId,
+                        'cluster' => $index + 1,
+                        'garis_kemiskinan' => $newCentroid[0],
+                        'upah_minimum' => $newCentroid[1],
+                        'pengeluaran' => $newCentroid[2],
+                        'rr_upah' => $newCentroid[3],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+    
+                // Cek konvergensi
+                $delta = 0;
+                for ($i = 0; $i < 3; $i++) {
+                    $delta += $this->euclideanDistance($centroids[$i], $newCentroids[$i]);
+                }
+    
+                if ($delta < $threshold) break;
+                else $this->hapus();
+                $centroids = $newCentroids;
+            }
+    
+            // Simpan hasil akhir keanggotaan
+            foreach ($clusters as $clusterIndex => $clusterPoints) {
+                foreach ($clusterPoints as $point) {
+                    DB::table('data_pekerja_cluster')->insert([
+                        'cluster' => $clusterIndex + 1,
+                        'id_provinsi' => $point['id_provinsi'],
+                        'tahun' => $point['tahun'],
+                        'garis_kemiskinan' => $point['fitur'][0],
+                        'upah_minimum' => $point['fitur'][1],
+                        'pengeluaran' => $point['fitur'][2],
+                        'rr_upah' => $point['fitur'][3],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+            
+            // DB::commit();
+            return redirect()->back()->with('success', 'Clustering berhasil dilakukan dan disimpan.');
+        // } catch (\Exception $e) {
+        //     // DB::rollBack();
+        //     return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        // }
+    }
+
+    private function euclideanDistance(array $a, array $b)
+    {
+        return sqrt(array_sum(array_map(fn($x, $y) => pow($x - $y, 2), $a, $b)));
     }
 
 

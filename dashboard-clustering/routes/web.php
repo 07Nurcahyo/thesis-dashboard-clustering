@@ -66,6 +66,7 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('list_iterasi_sse', [admin_controller::class, 'list_iterasi_sse'])->name('list_iterasi_sse');
                 Route::get('list_iterasi_cluster_baru', [admin_controller::class, 'list_iterasi_cluster_baru'])->name('list_iterasi_cluster_baru');
                 Route::get('list_data_hasil_akhir', [admin_controller::class, 'list_data_hasil_akhir'])->name('list_data_hasil_akhir');
+                Route::post('jalankan-kmeans', [admin_controller::class, 'jalankan'])->name('jalankan.kmeans');
         });
 
     });
