@@ -1,15 +1,15 @@
 @extends('layouts.template')
 
 @section('content')
-    <div class="card card-primary">
+    <div class="card card-navy">
         <div class="card-header">
             <h2 class="card-title font-weight-bold" style="font-size: 22px">Data Kesejahteraan Pekerja di Indonesia</h2>
             <div class="card-tools">
                 <button class="btn btn-success m-0 p-0 mr-3 p-1" data-toggle="modal" data-target="#jumlahInputModal">
-                    <i class="fas fa-plus"></i> Tambah Data Manual
+                    <i class="fas fa-plus"></i>  Tambah Data Manual
                 </button>
                 <button class="btn btn-success m-0 p-0 p-1" data-toggle="modal" data-target="#uploadCsvModal">
-                    <i class="fas fa-plus"></i> Tambah Data CSV
+                    <i class="fas fa-file"></i>  Tambah Data CSV
                 </button>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
@@ -47,7 +47,7 @@
                 <thead>
                     <tr style="text-align: center;">
                     {{-- <th>No</th> --}}
-                    <th>ID</th>
+                    <th>No</th>
                     <th>Provinsi</th>
                     <th>Tahun</th>
                     <th>Garis Kemiskinan</th>
@@ -62,18 +62,16 @@
         </div> <!-- /.card-body -->
         <!-- Modal Jumlah Input -->
         <div class="modal fade" id="jumlahInputModal" tabindex="-1" role="dialog" aria-labelledby="jumlahInputModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-sm" role="document">
                 <form id="jumlahForm">
                 <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title">Masukkan Jumlah Data</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <div class="modal-header bg-navy">
+                        <h5 class="modal-title">Masukkan Jumlah Data</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body">
-                    <input type="number" min="1" class="form-control" id="jumlah_data" placeholder="Jumlah data yang ingin dimasukkan">
-                    </div>
-                    <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Lanjut</button>
+                        <input type="number" min="1" class="form-control" id="jumlah_data" placeholder="Jumlah data yang ingin dimasukkan">
+                        <button type="submit" class="btn btn-warning mt-3">Lanjut   <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
                 </form>
@@ -84,15 +82,15 @@
             <div class="modal-dialog modal-lg " role="document">
                 <form id="manualForm" class="boder-dark">
                 <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title">Input Data Manual</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <div class="modal-header bg-navy">
+                        <h5 class="modal-title">Input Data Manual</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body" id="formInputContainer" style="overflow-y: scroll; max-height: 450px;">
-                    <!-- Dynamic Forms Generated Here -->
+                        <!-- Dynamic Forms Generated Here -->
                     </div>
-                    <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Simpan</button>
+                        <div class="modal-footer bg-secondary">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"> </i>  Simpan</button>
                     </div>
                 </div>
                 </form>
@@ -104,9 +102,9 @@
                 <form id="csvUploadForm" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-navy">
                         <h5 class="modal-title">Upload CSV</h5>
-                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body" style="overflow-y: scroll; max-height: 450px;">
                         <p class="badge badge-warning" style="font-size: 18px">Silakan pilih file CSV atau Excel untuk diunggah. Pastikan formatnya sesuai dengan yang diharapkan.</p>
@@ -115,7 +113,7 @@
                         <div id="csv_preview_container"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Simpan Data</button>
                     </div>
                 </div>
                 </form>
@@ -127,43 +125,61 @@
                 <form id="editForm">
                     @csrf
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-navy">
                             <h5 class="modal-title">Edit Data Pekerja</h5>
-                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                            <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="id" id="edit_id">
-                            <div class="form-group">
-                                <label>Provinsi</label>
-                                <select name="id_provinsi" id="edit_id_provinsi" class="form-control" required>
-                                    @foreach($provinsi as $item)
-                                        <option value="{{$item->id_provinsi}}">{{$item->nama_provinsi}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Provinsi</label>
+                                        <select name="id_provinsi" id="edit_id_provinsi" class="form-control" required>
+                                            @foreach($provinsi as $item)
+                                                <option value="{{$item->id_provinsi}}">{{$item->nama_provinsi}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Tahun</label>
+                                        <input type="number" name="tahun" id="edit_tahun" class="form-control" required>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Tahun</label>
-                                <input type="number" name="tahun" id="edit_tahun" class="form-control" required>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Garis Kemiskinan</label>
+                                        <input type="number" name="garis_kemiskinan" id="edit_garis_kemiskinan" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Upah Minimum</label>
+                                        <input type="number" name="upah_minimum" id="edit_upah_minimum" class="form-control" required>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Garis Kemiskinan</label>
-                                <input type="number" name="garis_kemiskinan" id="edit_garis_kemiskinan" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Upah Minimum</label>
-                                <input type="number" name="upah_minimum" id="edit_upah_minimum" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Pengeluaran</label>
-                                <input type="number" name="pengeluaran" id="edit_pengeluaran" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Rata-rata Upah</label>
-                                <input type="number" name="rr_upah" id="edit_rr_upah" class="form-control" required>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pengeluaran</label>
+                                        <input type="number" name="pengeluaran" id="edit_pengeluaran" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Rata-rata Upah</label>
+                                        <input type="number" name="rr_upah" id="edit_rr_upah" class="form-control" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>  Simpan Perubahan</button>
                         </div>
                     </div>
                 </form>
@@ -193,8 +209,8 @@
             },
             columns: [
                 {
-                    // data: "DT_RowIndex",
-                    data: "id",
+                    data: "DT_RowIndex",
+                    // data: "id",
                     className: "text-center",
                     orderable: false,
                     searchable: true
@@ -303,33 +319,51 @@
                 formHTML += `
                 <div class="border p-3 mb-3 border-dark">
                     <h3 class="text-bold" style="text-decoration: underline">Data #${i + 1}</h3>
-                    <div class="form-group">
-                        <label>Provinsi</label>
-                        <select name="data[${i}][id_provinsi]" class="form-control" required>
-                            @foreach($provinsi as $item)
-                                <option value="{{$item->id_provinsi}}">{{$item->nama_provinsi}}</option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Provinsi</label>
+                                <select name="data[${i}][id_provinsi]" class="form-control" required>
+                                    @foreach($provinsi as $item)
+                                        <option value="{{$item->id_provinsi}}">{{$item->nama_provinsi}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tahun</label>
+                                <input type="number" name="data[${i}][tahun]" class="form-control" required>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Tahun</label>
-                        <input type="number" name="data[${i}][tahun]" class="form-control" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Garis Kemiskinan</label>
+                                <input type="number" name="data[${i}][garis_kemiskinan]" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Upah Minimum</label>
+                                <input type="number" name="data[${i}][upah_minimum]" class="form-control" required>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Garis Kemiskinan</label>
-                        <input type="number" name="data[${i}][garis_kemiskinan]" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Upah Minimum</label>
-                        <input type="number" name="data[${i}][upah_minimum]" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Pengeluaran</label>
-                        <input type="number" name="data[${i}][pengeluaran]" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Rata-rata Upah</label>
-                        <input type="number" name="data[${i}][rr_upah]" class="form-control" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pengeluaran</label>
+                                <input type="number" name="data[${i}][pengeluaran]" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Rata-rata Upah</label>
+                                <input type="number" name="data[${i}][rr_upah]" class="form-control" required>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -346,13 +380,26 @@
                 success: function(res) {
                     $('#formInputModal').modal('hide');
                     $('#tabel_data_pekerja').DataTable().ajax.reload();
-                    alert('Data berhasil disimpan!');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Data berhasil disimpan.',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                 },
                 error: function() {
-                    alert('Terjadi kesalahan saat menyimpan data.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat menyimpan data.',
+                        showConfirmButton: true
+                    });
                 }
             });
         });
+
 
         // input csv
         $('#csv_file').on('change', function () {
@@ -493,10 +540,23 @@
             success: function(res) {
                 $('#editDataModal').modal('hide');
                 $('#tabel_data_pekerja').DataTable().ajax.reload();
-                alert('Data berhasil diperbarui!');
+                // alert('Data berhasil diperbarui!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Data berhasil diperbarui.',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
             },
             error: function() {
-                alert('Terjadi kesalahan saat mengedit data.');
+                // alert('Terjadi kesalahan saat mengedit data.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan saat mengubah data.',
+                    showConfirmButton: true
+                });
             }
         });
     });

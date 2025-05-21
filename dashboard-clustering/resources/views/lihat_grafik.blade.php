@@ -2,9 +2,53 @@
 
 @section('content')
 <div class="container">
+
+    {{-- linechart --}}
+    <div class="card">
+        <div class="card-header bg-navy">
+            <h2 class="card-title font-weight-bold" style="font-size: 22px">Linechart Data Kesejahteraan Pekerja Indonesia</h2>
+            <div class="card-tools">
+                <button class="btn btn-tool">
+                    <select class="form-control bg-light border-dark" name="provinsi" id="provinsi">
+                        @foreach($provinsiList as $provinsi=>$value)
+                          {{-- <option value="{{ $provinsi->id_provinsi }}">{{ $provinsi->nama_provinsi }}</option> --}}
+                          <option value="{{ $provinsi }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus" style="color: white;"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body" style="overflow-y: scroll; max-height: 450px;">
+            
+            {{-- <div class="chart" style="height: 400px;">
+                <canvas id="lineChartGK"></canvas>
+            </div><hr>
+            <div class="chart" style="height: 400px;">
+                <canvas id="lineChartUMP"></canvas>
+            </div><hr>
+            <div class="chart" style="height: 400px;">
+                <canvas id="lineChartPengeluaran"></canvas>
+            </div><hr>
+            <div class="chart" style="height: 400px;">
+                <canvas id="lineChartRRU"></canvas>
+            </div> --}}
+            <div class="chart" style="height: 400px;">
+                <canvas id="lineChartCombined"></canvas>
+            </div><hr>
+            <div class="chart" style="height: 400px;">
+                <canvas id="lineChartRRU"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
     {{-- barchart --}}
     <div class="card">
-        <div class="card-header bg-secondary">
+        <div class="card-header bg-navy">
             <h2 class="card-title font-weight-bold" style="font-size: 22px">Barchart Data Kesejahteraan Pekerja Indonesia</h2>
             <div class="card-tools">
                 <button class="btn btn-tool">
@@ -37,43 +81,8 @@
                 <canvas id="rataRataUpahChart"></canvas>
             </div>
         </div>
-    </div><br>
-
-    {{-- linechart --}}
-    <div class="card">
-        <div class="card-header bg-secondary">
-            <h2 class="card-title font-weight-bold" style="font-size: 22px">Linechart Data Kesejahteraan Pekerja Indonesia</h2>
-            <div class="card-tools">
-                <button class="btn btn-tool">
-                    <select class="form-control bg-light border-dark" name="provinsi" id="provinsi">
-                        @foreach($provinsiList as $provinsi=>$value)
-                          {{-- <option value="{{ $provinsi->id_provinsi }}">{{ $provinsi->nama_provinsi }}</option> --}}
-                          <option value="{{ $provinsi }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                </button>
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus" style="color: white;"></i>
-                </button>
-            </div>
-        </div>
-        <div class="card-body" style="overflow-y: scroll; max-height: 450px;">
-            
-            <div class="chart" style="height: 400px;">
-                <canvas id="lineChartGK"></canvas>
-            </div><hr>
-            <div class="chart" style="height: 400px;">
-                <canvas id="lineChartUMP"></canvas>
-            </div><hr>
-            <div class="chart" style="height: 400px;">
-                <canvas id="lineChartPengeluaran"></canvas>
-            </div><hr>
-            <div class="chart" style="height: 400px;">
-                <canvas id="lineChartRRU"></canvas>
-            </div>
-        </div>
-
     </div>
+
 </div>
 @endsection
 
@@ -268,50 +277,156 @@ $(function () {
             }
         });
     }
-    async function renderAllLineCharts(provinsi) {
-        const chartConfigs = [
-            {
-                canvasId: 'lineChartGK',
-                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineGK',
-                apiUrl: '/api/getLineGK',
-                labelKey: 'garis_kemiskinan',
-                displayLabel: 'Garis Kemiskinan',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)'
-            },
-            {
-                canvasId: 'lineChartUMP',
-                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineUMP',
-                apiUrl: '/api/getLineUMP',
-                labelKey: 'upah_minimum',
-                displayLabel: 'Upah Minimum',
-                backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                borderColor: 'rgba(255, 206, 86, 1)'
-            },
-            {
-                canvasId: 'lineChartPengeluaran',
-                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLinePengeluaran',
-                apiUrl: '/api/getLinePengeluaran',
-                labelKey: 'pengeluaran',
-                displayLabel: 'Pengeluaran',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)'
-            },
-            {
-                canvasId: 'lineChartRRU',
-                // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineRRU',
-                apiUrl: '/api/getLineRRU',
-                labelKey: 'rr_upah',
-                displayLabel: 'Rata-Rata Upah',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)'
-            }
-        ];
+    // async function renderAllLineCharts(provinsi) {
+    //     const chartConfigs = [
+    //         {
+    //             canvasId: 'lineChartGK',
+    //             // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineGK',
+    //             apiUrl: '/api/getLineGK',
+    //             labelKey: 'garis_kemiskinan',
+    //             displayLabel: 'Garis Kemiskinan',
+    //             backgroundColor: 'rgba(255, 99, 132, 0.2)',
+    //             borderColor: 'rgba(255, 99, 132, 1)'
+    //         },
+    //         {
+    //             canvasId: 'lineChartUMP',
+    //             // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineUMP',
+    //             apiUrl: '/api/getLineUMP',
+    //             labelKey: 'upah_minimum',
+    //             displayLabel: 'Upah Minimum',
+    //             backgroundColor: 'rgba(255, 206, 86, 0.2)',
+    //             borderColor: 'rgba(255, 206, 86, 1)'
+    //         },
+    //         {
+    //             canvasId: 'lineChartPengeluaran',
+    //             // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLinePengeluaran',
+    //             apiUrl: '/api/getLinePengeluaran',
+    //             labelKey: 'pengeluaran',
+    //             displayLabel: 'Pengeluaran',
+    //             backgroundColor: 'rgba(153, 102, 255, 0.2)',
+    //             borderColor: 'rgba(153, 102, 255, 1)'
+    //         },
+    //         {
+    //             canvasId: 'lineChartRRU',
+    //             // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getLineRRU',
+    //             apiUrl: '/api/getLineRRU',
+    //             labelKey: 'rr_upah',
+    //             displayLabel: 'Rata-Rata Upah',
+    //             backgroundColor: 'rgba(75, 192, 192, 0.2)',
+    //             borderColor: 'rgba(75, 192, 192, 1)'
+    //         }
+    //     ];
 
-        for (const config of chartConfigs) {
-            const data = await fetchLineChartData(config.apiUrl, provinsi);
-            renderLineChart({ ...config, data });
+    //     for (const config of chartConfigs) {
+    //         const data = await fetchLineChartData(config.apiUrl, provinsi);
+    //         renderLineChart({ ...config, data });
+    //     }
+    // }
+    async function renderAllLineCharts(provinsi) {
+        // Hancurkan jika ada chart lama
+        if (chartInstances['lineChartCombined']) {
+            chartInstances['lineChartCombined'].destroy();
         }
+        if (chartInstances['lineChartRRU']) {
+            chartInstances['lineChartRRU'].destroy();
+        }
+
+        // Combined chart: GK, UMP, Pengeluaran
+        const combinedApis = {
+            'Garis Kemiskinan': {
+                api: '/api/getLineGK',
+                key: 'garis_kemiskinan',
+                color: 'rgba(255, 99, 132, 1)'
+            },
+            'Upah Minimum': {
+                api: '/api/getLineUMP',
+                key: 'upah_minimum',
+                color: 'rgba(255, 206, 86, 1)'
+            },
+            'Pengeluaran': {
+                api: '/api/getLinePengeluaran',
+                key: 'pengeluaran',
+                color: 'rgba(153, 102, 255, 1)'
+            }
+        };
+        const combinedDatasets = [];
+        let labels = [];
+        for (const [label, config] of Object.entries(combinedApis)) {
+            const data = await fetchLineChartData(config.api, provinsi);
+            if (labels.length === 0) {
+                labels = data.map(item => item.tahun);
+            }
+            combinedDatasets.push({
+                label: label,
+                data: data.map(item => item[config.key]),
+                borderColor: config.color,
+                fill: false,
+                tension: 0.1
+            });
+        }
+        const ctxCombined = document.getElementById('lineChartCombined').getContext('2d');
+        chartInstances['lineChartCombined'] = new Chart(ctxCombined, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: combinedDatasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Tahun' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Nilai' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { font: { size: 14, weight: 'bold' } }
+                    }
+                }
+            }
+        });
+        // Rata-Rata Upah chart sendiri
+        const rruData = await fetchLineChartData('/api/getLineRRU', provinsi);
+        const ctxRRU = document.getElementById('lineChartRRU').getContext('2d');
+        chartInstances['lineChartRRU'] = new Chart(ctxRRU, {
+            type: 'line',
+            data: {
+                labels: rruData.map(item => item.tahun),
+                datasets: [{
+                    label: 'Rata-Rata Upah',
+                    data: rruData.map(item => item.rr_upah),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Tahun' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Rata-Rata Upah' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { font: { size: 14, weight: 'bold' } }
+                    }
+                }
+            }
+        });
     }
 
     $('#provinsi').on('change', function () {

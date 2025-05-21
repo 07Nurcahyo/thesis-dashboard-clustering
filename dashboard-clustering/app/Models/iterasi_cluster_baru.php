@@ -25,9 +25,9 @@ class iterasi_cluster_baru extends Model
         'updated_at',
     ];
 
-    public function iterasi_sse_default(): BelongsTo
+    public function iterasi_sse(): BelongsTo
     {
-        return $this->belongsTo(iterasi_sse_default::class, 'id_iterasi_sse_default', 'id_iterasi_sse_default');
+        return $this->belongsTo(iterasi_sse::class, 'id_iterasi_sse', 'id_iterasi_sse');
     }
     public function cluster(): BelongsTo
     {

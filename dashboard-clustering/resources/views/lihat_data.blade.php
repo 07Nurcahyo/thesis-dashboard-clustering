@@ -5,8 +5,8 @@
 <div class="container">
 
   <div class="card">
-    <div class="card-header d-flex justify-content-center bg-secondary">
-      <h2 class="card-title font-weight-bold" style="font-size: 22px">Data Cluster Kesejahteraan Pekerja di Indonesia</h2>
+    <div class="card-header d-flex justify-content-center bg-navy">
+      <h2 class="card-title font-weight-bold" style="font-size: 22px">Keanggotaan Cluster Akhir Kesejahteraan Pekerja di Indonesia</h2>
     </div>
     <div class="card-body">
       @if (session('success'))
@@ -38,7 +38,8 @@
         <table class="table table-bordered table-striped w-100" id="tabel_data_cluster">
           <thead>
             <tr style="text-align: center;">
-              <th>No</th>
+              {{-- <th>No</th> --}}
+              <th>ID</th>
               <th>Provinsi</th>
               <th>Kategori</th>
               <th>Tahun</th>
@@ -56,7 +57,7 @@
 
 
   <div class="card">
-    <div class="card-header d-flex justify-content-center bg-secondary">
+    <div class="card-header d-flex justify-content-center bg-navy">
       <h2 class="card-title font-weight-bold" style="font-size: 22px">Iterasi Akhir</h2>
     </div>
     <div class="card-body">
@@ -108,8 +109,11 @@
   <div class="row">
     <div class="col-md-3">
       <div class="card">
+        <div class="card-header d-flex justify-content-center bg-navy">
+          <h2 class="card-title font-weight-bold" style="font-size: 22px">SSE Iterasi Akhir</h2>
+        </div>
         <div class="card-body">
-          <div class="card-title font-weight-bold">Berikut adalah SSE dari iterasi akhir : </div>
+          {{-- <div class="card-title font-weight-bold">Berikut adalah SSE dari iterasi akhir : </div> --}}
           <div class="table-responsive">
             <table class="table table-bordered table-striped w-100" id="tabel_data_sse">
               <thead>
@@ -122,8 +126,11 @@
     </div>
     <div class="col-md-9">
       <div class="card">
+        <div class="card-header d-flex justify-content-center bg-navy">
+          <h2 class="card-title font-weight-bold" style="font-size: 22px">Centroid Akhir</h2>
+        </div>
         <div class="card-body">
-          <div class="card-title font-weight-bold">Berikut adalah data cluster dari iterasi akhir : </div>
+          {{-- <div class="card-title font-weight-bold">Berikut adalah data centroid akhir : </div> --}}
           <div class="table-responsive">
             <table class="table table-bordered table-striped w-auto" id="tabel_data_cluster_akhir">
               <thead>
@@ -163,9 +170,14 @@
         }
       },
       columns: [
+        // {
+        //   data: "DT_RowIndex",
+        //   className: "text-center",
+        //   orderable: false,
+        //   searchable: true
+        // },
         {
-          data: "DT_RowIndex",
-          // data: "id",
+          data: "id",
           className: "text-center",
           orderable: false,
           searchable: true
@@ -255,6 +267,7 @@
         }
       ],
       "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      "order": [[ 1, "asc" ], [ 3, "asc" ]],
       initComplete: function() {
         var api = this.api();
         api.buttons().container().appendTo('#buttons_2');// .addClass('float-right');

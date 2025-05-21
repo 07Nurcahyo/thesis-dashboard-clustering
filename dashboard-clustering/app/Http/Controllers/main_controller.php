@@ -7,8 +7,11 @@ use App\Models\provinsi;
 use Illuminate\Http\Request;
 use App\Models\data_pekerja;
 use App\Models\data_pekerja_cluster;
+use App\Models\iterasi_cluster_baru;
 use App\Models\iterasi_cluster_baru_default;
+use App\Models\iterasi_jarak;
 use App\Models\iterasi_jarak_default;
+use App\Models\iterasi_sse;
 use App\Models\iterasi_sse_default;
 use App\Models\sse_default;
 use Yajra\DataTables\Facades\DataTables;
@@ -65,7 +68,7 @@ class main_controller extends Controller
             ->make(true);
     }
     public function list_data_iterasi_default(Request $request){
-        $data_iterasi = iterasi_jarak_default::select('id_iterasi_jarak_default', 'id_provinsi', 'tahun', 'jarak_c1', 'jarak_c2', 'jarak_c3', 'c_terkecil', 'cluster', 'jarak_minimum')->with('provinsi', 'cluster');
+        $data_iterasi = iterasi_jarak::select('id_iterasi_jarak', 'id_provinsi', 'tahun', 'jarak_c1', 'jarak_c2', 'jarak_c3', 'c_terkecil', 'cluster', 'jarak_minimum')->with('provinsi', 'cluster');
         // filter
         if ($request->id_provinsi) {
             $p = strval($request->id_provinsi);
@@ -76,13 +79,13 @@ class main_controller extends Controller
             ->make(true);
     }
     public function list_data_sse(Request $request){
-        $data_sse = iterasi_sse_default::select('id_iterasi_sse_default', 'id_iterasi_jarak_default', 'sse')->with('iterasi_jarak_default');
+        $data_sse = iterasi_sse::select('id_iterasi_sse', 'id_iterasi_jarak', 'sse')->with('iterasi_jarak');
         return DataTables::of($data_sse)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->make(true);
     }
     public function list_data_cluster_akhir(Request $request){
-        $data_cluster_akhir = iterasi_cluster_baru_default::select('id_iterasi_cluster_baru_default', 'id_iterasi_sse_default', 'cluster', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('iterasi_sse_default', 'cluster');
+        $data_cluster_akhir = iterasi_cluster_baru::select('id_iterasi_cluster_baru', 'id_iterasi_sse', 'cluster', 'garis_kemiskinan', 'upah_minimum', 'pengeluaran', 'rr_upah')->with('iterasi_sse', 'cluster');
         return DataTables::of($data_cluster_akhir)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->make(true);

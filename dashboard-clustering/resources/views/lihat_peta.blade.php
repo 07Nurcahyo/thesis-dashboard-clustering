@@ -42,7 +42,7 @@
           
 
         <!-- Info boxes -->
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box">
                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-chart-line"></i></span>
@@ -99,7 +99,7 @@
               <!-- /.info-box -->
             </div>
             <!-- /.col -->
-        </div>
+        </div> --}}
 
         <!-- Main row -->
         <div class="row">
@@ -107,7 +107,7 @@
         <div class="col-md-12">
             <!-- MAP & BOX PANE -->
             <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-navy">
                     <h3 class="card-title">Peta Informasi Kesejahteraan Pekerja di Indonesia berdasarkan Provinsi</h3>
                     <div class="card-tools">
                         <button class="btn btn-tool">
@@ -117,15 +117,12 @@
                             @endforeach
                             </select>
                         </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus" style="color: white;"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        {{-- <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
                         </button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove">
                             <i class="fas fa-times"></i>
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
                 <!-- /.card-header -->
