@@ -6,9 +6,9 @@
         <div class="modal fade" id="modalInfoProvinsi" tabindex="-1" role="dialog" aria-labelledby="modalInfoProvinsiLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-secondary">
                         <h5 class="modal-title text-center w-100" id="modalInfoProvinsiLabel"><span id="provinsiName" class="font-weight-bold"></span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -169,119 +169,231 @@
 
 @push('js')
 <script type="text/javascript">
+// jQuery(document).ready(function() {
+//     jQuery('[data-toggle="tooltip"]').tooltip({ container: 'body', placement: 'top', html: true });
+//     // reload waktu ubah filter tahun //
+//     jQuery("#tahun").on("change", function() {
+//         location.reload();
+//     });
+
+//     let tahun = jQuery("#tahun").val();
+
+//     jQuery.ajax({
+//         // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+//         url: "/api/getDataPeta",
+//         method: "GET",
+//         data: { tahun: jQuery("#tahun").val() },
+//         success: function(data) {
+//             let colors = {};
+//             data.forEach(function(item) {
+//                 let provinsi = item.path.toLowerCase();
+//                 if (item.cluster == 1) {
+//                     colors[provinsi] = 'green';
+//                 } else if (item.cluster == 2) {
+//                     colors[provinsi] = 'red';
+//                 } else if (item.cluster == 3) {
+//                     colors[provinsi] = 'yellow';
+//                 } else {
+//                     colors[provinsi] = 'pink'; // Warna default jika tidak ada cluster
+//                 }
+//             });
+//             // console.log('colors', colors);
+//             jQuery('#vmap').vectorMap({
+//                 map: 'indonesia_id',
+//                 backgroundColor: '#a5bfdd',
+//                 borderColor: 'black',
+//                 borderOpacity: 0.25,
+//                 borderWidth: 1,
+//                 enableZoom: false,
+//                 hoverColor: '#c9dfaf',
+//                 normalizeFunction: 'linear',
+//                 selectedColor: '#c9dfaf',
+//                 showTooltip: false,
+//                 colors: colors, // <- Pewarnaan provinsi berdasarkan cluster
+//                 // colors: {
+//                 //     'path01': '#ff00ff', // Aceh
+//                 //     'path02': '#ff0000', // Jakarta
+//                 //     'path03': '#00ff00', // Central Java
+//                 //     'path04': '#0000ff', // West Java
+//                 //     'path05': '#ffff00', // East Java
+//                 // },
+//                 onRegionClick: function(element, code, region) {
+//                     console.log(region);
+//                     var tahun = jQuery("#tahun").val();
+//                     jQuery.ajax({
+//                         // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
+//                         url: "/api/getDataPeta",
+//                         method: "GET",
+//                         data: { tahun: tahun },
+//                         success: function(data) {
+//                             let found = data.find(item => item.nama_provinsi.toUpperCase() === region.toUpperCase());
+//                             if (found) {
+//                                 jQuery("#provinsiName").text(found.nama_provinsi);
+//                                 jQuery("#clusterName").text(
+//                                     found.cluster == 1 ? "Sejahtera" :
+//                                     found.cluster == 2 ? "Kurang Mampu" : "Menengah"
+//                                 );
+//                                 jQuery("#year").text(found.tahun);
+//                                 jQuery("#garisKemiskinan").text(found.garis_kemiskinan);
+//                                 jQuery("#upahMinimum").text(found.upah_minimum);
+//                                 jQuery("#pengeluaran").text(found.pengeluaran);
+//                                 jQuery("#rataRataUpah").text(found.rr_upah);
+//                                 jQuery("#modalInfoProvinsi").modal("show");
+
+//                                 if (window.myChart) {
+//                                     window.myChart.destroy();
+//                                 }
+
+//                                 let ctx = document.getElementById('chartProvinsi').getContext('2d');
+//                                 window.myChart = new Chart(ctx, {
+//                                     type: 'horizontalBar',
+//                                     data: {
+//                                         labels: ['Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'],
+//                                         datasets: [{
+//                                             data: [
+//                                                 found.garis_kemiskinan,
+//                                                 found.upah_minimum,
+//                                                 found.pengeluaran,
+//                                                 found.rr_upah
+//                                             ],
+//                                             backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#17a2b8']
+//                                         }]
+//                                     },
+//                                     options: {
+//                                         responsive: true,
+//                                         legend: { display: false },
+//                                         scales: { y: { beginAtZero: true, display: true } }
+//                                     }
+//                                 });
+//                             } else {
+//                                 alert("Data untuk " + region + " tidak ditemukan.");
+//                             }
+//                         },
+//                         error: function() {
+//                             alert("Gagal mengambil data.");
+//                         }
+//                     });
+//                 }
+//             });
+//             $('#legend').show();
+//         },
+//         error: function() {
+//             alert("Gagal memuat data peta.");
+//         }
+//     });
+    
+// });
+
+
 jQuery(document).ready(function() {
     jQuery('[data-toggle="tooltip"]').tooltip({ container: 'body', placement: 'top', html: true });
-    // reload waktu ubah filter tahun //
-    jQuery("#tahun").on("change", function() {
-        location.reload();
-    });
 
-    let tahun = jQuery("#tahun").val();
+    function loadMapData(tahun) {
+        jQuery.ajax({
+            url: "/api/getDataPeta",
+            method: "GET",
+            data: { tahun: tahun },
+            success: function(data) {
+                let colors = {};
+                data.forEach(function(item) {
+                    let provinsi = item.path.toLowerCase();
+                    if (item.cluster == 1) {
+                        colors[provinsi] = 'green';
+                    } else if (item.cluster == 2) {
+                        colors[provinsi] = 'red';
+                    } else if (item.cluster == 3) {
+                        colors[provinsi] = 'yellow';
+                    } else {
+                        colors[provinsi] = 'pink'; // Warna default jika tidak ada cluster
+                    }
+                });
 
-    jQuery.ajax({
-        // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
-        url: "/api/getDataPeta",
-        method: "GET",
-        data: { tahun: jQuery("#tahun").val() },
-        success: function(data) {
-            let colors = {};
-            data.forEach(function(item) {
-                let provinsi = item.path.toLowerCase();
-                if (item.cluster == 1) {
-                    colors[provinsi] = 'green';
-                } else if (item.cluster == 2) {
-                    colors[provinsi] = 'red';
-                } else if (item.cluster == 3) {
-                    colors[provinsi] = 'yellow';
-                } else {
-                    colors[provinsi] = 'pink'; // Warna default jika tidak ada cluster
-                }
-            });
-            // console.log('colors', colors);
-            jQuery('#vmap').vectorMap({
-                map: 'indonesia_id',
-                backgroundColor: '#a5bfdd',
-                borderColor: 'black',
-                borderOpacity: 0.25,
-                borderWidth: 1,
-                enableZoom: false,
-                hoverColor: '#c9dfaf',
-                normalizeFunction: 'linear',
-                selectedColor: '#c9dfaf',
-                showTooltip: false,
-                colors: colors, // <- Pewarnaan provinsi berdasarkan cluster
-                // colors: {
-                //     'path01': '#ff00ff', // Aceh
-                //     'path02': '#ff0000', // Jakarta
-                //     'path03': '#00ff00', // Central Java
-                //     'path04': '#0000ff', // West Java
-                //     'path05': '#ffff00', // East Java
-                // },
-                onRegionClick: function(element, code, region) {
-                    console.log(region);
-                    var tahun = jQuery("#tahun").val();
-                    jQuery.ajax({
-                        // url: "http://localhost/Skripsi/dashboard-clustering/public/api/getDataPeta",
-                        url: "/api/getDataPeta",
-                        method: "GET",
-                        data: { tahun: tahun },
-                        success: function(data) {
-                            let found = data.find(item => item.nama_provinsi.toUpperCase() === region.toUpperCase());
-                            if (found) {
-                                jQuery("#provinsiName").text(found.nama_provinsi);
-                                jQuery("#clusterName").text(
-                                    found.cluster == 1 ? "Sejahtera" :
-                                    found.cluster == 2 ? "Kurang Mampu" : "Menengah"
-                                );
-                                jQuery("#year").text(found.tahun);
-                                jQuery("#garisKemiskinan").text(found.garis_kemiskinan);
-                                jQuery("#upahMinimum").text(found.upah_minimum);
-                                jQuery("#pengeluaran").text(found.pengeluaran);
-                                jQuery("#rataRataUpah").text(found.rr_upah);
-                                jQuery("#modalInfoProvinsi").modal("show");
+                jQuery('#vmap').empty(); // Bersihkan sebelum render ulang
+                jQuery('#vmap').vectorMap({
+                    map: 'indonesia_id',
+                    backgroundColor: '#a5bfdd',
+                    borderColor: 'black',
+                    borderOpacity: 0.25,
+                    borderWidth: 1,
+                    enableZoom: false,
+                    hoverColor: '#c9dfaf',
+                    normalizeFunction: 'linear',
+                    selectedColor: '#c9dfaf',
+                    showTooltip: false,
+                    colors: colors,
+                    onRegionClick: function(element, code, region) {
+                        jQuery.ajax({
+                            url: "/api/getDataPeta",
+                            method: "GET",
+                            data: { tahun: tahun },
+                            success: function(data) {
+                                let found = data.find(item => item.nama_provinsi.toUpperCase() === region.toUpperCase());
+                                if (found) {
+                                    jQuery("#provinsiName").text(found.nama_provinsi);
+                                    jQuery("#clusterName").text(
+                                        found.cluster == 1 ? "Sejahtera" :
+                                        found.cluster == 2 ? "Kurang Mampu" : "Menengah"
+                                    );
+                                    jQuery("#year").text(found.tahun);
+                                    jQuery("#garisKemiskinan").text(found.garis_kemiskinan);
+                                    jQuery("#upahMinimum").text(found.upah_minimum);
+                                    jQuery("#pengeluaran").text(found.pengeluaran);
+                                    jQuery("#rataRataUpah").text(found.rr_upah);
+                                    jQuery("#modalInfoProvinsi").modal("show");
 
-                                if (window.myChart) {
-                                    window.myChart.destroy();
-                                }
-
-                                let ctx = document.getElementById('chartProvinsi').getContext('2d');
-                                window.myChart = new Chart(ctx, {
-                                    type: 'horizontalBar',
-                                    data: {
-                                        labels: ['Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'],
-                                        datasets: [{
-                                            data: [
-                                                found.garis_kemiskinan,
-                                                found.upah_minimum,
-                                                found.pengeluaran,
-                                                found.rr_upah
-                                            ],
-                                            backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#17a2b8']
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        legend: { display: false },
-                                        scales: { y: { beginAtZero: true, display: true } }
+                                    if (window.myChart) {
+                                        window.myChart.destroy();
                                     }
-                                });
-                            } else {
-                                alert("Data untuk " + region + " tidak ditemukan.");
+
+                                    let ctx = document.getElementById('chartProvinsi').getContext('2d');
+                                    window.myChart = new Chart(ctx, {
+                                        type: 'horizontalBar',
+                                        data: {
+                                            labels: ['Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'],
+                                            datasets: [{
+                                                data: [
+                                                    found.garis_kemiskinan,
+                                                    found.upah_minimum,
+                                                    found.pengeluaran,
+                                                    found.rr_upah
+                                                ],
+                                                backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#17a2b8']
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            legend: { display: false },
+                                            scales: { y: { beginAtZero: true, display: true } }
+                                        }
+                                    });
+                                } else {
+                                    alert("Data untuk " + region + " tidak ditemukan.");
+                                }
+                            },
+                            error: function() {
+                                alert("Gagal mengambil data.");
                             }
-                        },
-                        error: function() {
-                            alert("Gagal mengambil data.");
-                        }
-                    });
-                }
-            });
-            $('#legend').show();
-        },
-        error: function() {
-            alert("Gagal memuat data peta.");
-        }
+                        });
+                    }
+                });
+
+                $('#legend').show();
+            },
+            error: function() {
+                alert("Gagal memuat data peta.");
+            }
+        });
+    }
+
+    // Saat halaman pertama kali dimuat
+    let tahunAwal = jQuery("#tahun").val();
+    loadMapData(tahunAwal);
+
+    // Saat filter tahun berubah
+    jQuery("#tahun").on("change", function() {
+        let tahunBaru = jQuery(this).val();
+        loadMapData(tahunBaru);
     });
-    
 });
 </script>
 @endpush
