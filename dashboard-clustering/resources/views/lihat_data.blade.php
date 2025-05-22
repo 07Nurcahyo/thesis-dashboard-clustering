@@ -170,13 +170,8 @@
         }
       },
       columns: [
-        // {
-        //   data: "DT_RowIndex",
-        //   className: "text-center",
-        //   orderable: false,
-        //   searchable: true
-        // },
         {
+          // data: "DT_RowIndex",
           data: "id",
           className: "text-center",
           orderable: false,
@@ -275,12 +270,13 @@
       },
     });
     $('#id_provinsi_2').on('change',function() {
+      console.log('yeah');
       dataPekerjaCluster.ajax.reload();
     });
     $('#buttons_2').html(dataPekerjaCluster.buttons().container());
 
 
-    var dataPekerjaCluster = $('#tabel_data_iterasi').DataTable({
+    var dataPekerjaIterasi = $('#tabel_data_iterasi').DataTable({
       serverSide: false,
       ajax: {
         url: "{{ url('/lihat_data/list_data_iterasi_default') }}",
@@ -396,11 +392,12 @@
       },
     });
     $('#id_provinsi_3').on('change',function() {
-      dataPekerjaCluster.ajax.reload();
+      dataPekerjaIterasi.ajax.reload();
     });
-    $('#buttons_3').html(dataPekerjaCluster.buttons().container());
+    $('#buttons_3').html(dataPekerjaIterasi.buttons().container());
 
-    var dataPekerjaCluster = $('#tabel_data_sse').DataTable({
+    
+    var dataPekerjaSSE = $('#tabel_data_sse').DataTable({
       serverSide: false,
       ajax: {
         url: "{{ url('/lihat_data/list_data_sse') }}",
@@ -415,8 +412,7 @@
       ],
       dom: 't', // Hides the "show ... entries", search, and pagination controls
     });
-
-    var dataPekerjaCluster = $('#tabel_data_cluster_akhir').DataTable({
+    var dataPekerjaClusterAkhir = $('#tabel_data_cluster_akhir').DataTable({
       serverSide: false,
       ajax: {
         url: "{{ url('/lihat_data/list_data_cluster_akhir') }}",

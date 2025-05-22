@@ -467,7 +467,14 @@
                 success: function () {
                     $('#uploadCsvModal').modal('hide');
                     $('#tabel_data_pekerja').DataTable().ajax.reload();
-                    alert('Data berhasil diimport');
+                    // alert('Data berhasil diimport');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Diimport!',
+                        text: 'Data Kesejahteraan Pekerja Di Indonesia Berhasil Diimport.',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                 }
             });
         });

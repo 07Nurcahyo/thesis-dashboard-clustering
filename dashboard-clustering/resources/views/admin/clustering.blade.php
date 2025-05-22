@@ -828,34 +828,52 @@
 
     // K-Means Clustering //
     $('#btnJalankanKMeans').click(function() {
-        if (confirm("Yakin ingin menjalankan K-Means Clustering sekarang?")) {
-            $.ajax({
-                url: "{{ route('jalankan.kmeans') }}", // route ini harus kamu definisikan
-                method: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}"
-                },
-                beforeSend: function() {
-                    $('#btnJalankanKMeans').html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
-                    $('#btnJalankanKMeans').prop('disabled', true);
-                },
-                success: function(res) {
-                    alert('Clustering selesai!');
-                    $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
+        Swal.fire({
+            title: 'Yakin?',
+            text: "Yakin ingin menjalankan K-Means Clustering sekarang?. Proses ini akan memakan waktu beberapa saat.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, jalankan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('jalankan.kmeans') }}", // route ini harus kamu definisikan
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    beforeSend: function() {
+                        $('#btnJalankanKMeans').html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+                        $('#btnJalankanKMeans').prop('disabled', true);
+                    },
+                    success: function(res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Clustering selesai!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
 
-                    // Reload semua tabel
-                    $('#tabel_data_iterasi').DataTable().ajax.reload();
-                    $('#tabel_data_sse').DataTable().ajax.reload();
-                    $('#tabel_data_cluster_baru').DataTable().ajax.reload();
-                    $('#tabel_hasil').DataTable().ajax.reload();
-                },
-                error: function(err) {
-                    console.error(err);
-                    alert('Terjadi kesalahan.');
-                    $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
-                }
-            });
-        }
+                        // Reload semua tabel
+                        $('#tabel_data_iterasi').DataTable().ajax.reload();
+                        $('#tabel_data_sse').DataTable().ajax.reload();
+                        $('#tabel_data_cluster_baru').DataTable().ajax.reload();
+                        $('#tabel_hasil').DataTable().ajax.reload();
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi kesalahan.',
+                            showConfirmButton: true
+                        });
+                        $('#btnJalankanKMeans').html('Jalankan K-Means Clustering Sekarang').prop('disabled', false);
+                    }
+                });
+            }
+        });
     });
 
 

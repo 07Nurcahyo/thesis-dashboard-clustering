@@ -60,6 +60,7 @@ class main_controller extends Controller
         //     $data_pekerjas->where('id_provinsi',$p);
         // }
         if ($request->id_provinsi) {
+            // logger()->info('ID Provinsi: ' . $request->id_provinsi);
             $p = strval($request->id_provinsi);
             $data_pekerjas_cluster->where('id_provinsi',$p);
         } 
