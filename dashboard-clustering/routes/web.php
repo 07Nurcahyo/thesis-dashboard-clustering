@@ -24,6 +24,10 @@ Route::get('/', [main_controller::class, 'index']);
 Route::get('/lihat_data', [main_controller::class, 'lihat_data'])->name('lihat_data');
 Route::get('/lihat_grafik', [main_controller::class, 'lihat_grafik'])->name('lihat_grafik');
 Route::get('/lihat_peta', [main_controller::class, 'lihat_peta'])->name('lihat_peta');
+Route::get('/get-pie-chart', [main_controller::class, 'getPieChart']);
+Route::get('/data-sse', [admin_controller::class, 'getDataSSE'])->name('data.sse');
+Route::get('/elbow-data', [admin_controller::class, 'getElbowData'])->name('data.elbow');
+Route::get('/silhouette-score', [admin_controller::class, 'silhouetteScore'])->name('silhouette.score');
 
 Route::group(['prefix' => 'lihat_data'], function() {
     Route::get('list', [main_controller::class, 'list_data_pekerja'])->name('list_data_pekerja');
@@ -67,6 +71,10 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('list_iterasi_cluster_baru', [admin_controller::class, 'list_iterasi_cluster_baru'])->name('list_iterasi_cluster_baru');
                 Route::get('list_data_hasil_akhir', [admin_controller::class, 'list_data_hasil_akhir'])->name('list_data_hasil_akhir');
                 Route::post('jalankan-kmeans', [admin_controller::class, 'jalankan'])->name('jalankan.kmeans');
+                // Route::get('/data-sse', [admin_controller::class, 'getDataSSE'])->name('data.sse');
+                // Route::get('/elbow-data', [admin_controller::class, 'getElbowData'])->name('data.elbow');
+                // Route::get('/silhouette-score', [admin_controller::class, 'silhouetteScore'])->name('silhouette.score');
+
         });
 
     });

@@ -20,16 +20,16 @@
                                 <p><strong>Tahun:</strong> <span id="year"></span></p><hr>
                                 <p 
                                 {{-- style="color: #dc3545" --}}
-                                ><strong>Garis Kemiskinan:</strong> <span id="garisKemiskinan"></span></p>
+                                ><strong>Garis Kemiskinan (Rp):</strong> <span id="garisKemiskinan"></span></p>
                                 <p 
                                 {{-- style="color: #ffc107" --}}
-                                ><strong>Upah Minimum:</strong> <span id="upahMinimum"></span></p>
+                                ><strong>Upah Minimum (Rp):</strong> <span id="upahMinimum"></span></p>
                                 <p 
                                 {{-- style="color: #28a745" --}}
-                                ><strong>Pengeluaran:</strong> <span id="pengeluaran"></span></p>
+                                ><strong>Pengeluaran (Rp):</strong> <span id="pengeluaran"></span></p>
                                 <p 
                                 {{-- style="color: #17a2b8" --}}
-                                ><strong>Rata-rata Upah:</strong> <span id="rataRataUpah"></span></p>
+                                ><strong>RR Upah per Jam (Rp):</strong> <span id="rataRataUpah"></span></p>
                             </div>
                             <div class="col-md-8">
                                 <canvas id="chartProvinsi" height="20" width="40"></canvas>
@@ -131,9 +131,10 @@
                         <div class="p-1 flex-fill" style="overflow: hidden">
                             <!-- Map will be created here -->
                             <div id="world-map-markers" style="height: 525px; overflow: hidden">
-                                <div class="vmap" id="vmap" style="height: 100%" data-toggle="tooltip" data-original-title="">
-                                    <div id="legend" style="
+                                <div id="legend" style="
                                     position: absolute;
+                                    margin-top: 60px;
+                                    margin-right: 10px;
                                     top: 10px;
                                     right: 10px;
                                     background: rgba(255,255,255,0.9);
@@ -143,12 +144,13 @@
                                     z-index: 1000;
                                     /* visibility: hidden; */
                                     display: none;
-                                  ">
+                                ">
                                     <div><span style="display:inline-block;width:12px;height:12px;background:green;margin-right:5px;"></span>Sejahtera (C1)</div>
                                     <div><span style="display:inline-block;width:12px;height:12px;background:#ffff00;margin-right:5px;"></span>Menengah (C3)</div>
                                     <div><span style="display:inline-block;width:12px;height:12px;background:red;margin-right:5px;"></span>Kurang Mampu (C2)</div>
                                     <!-- Add more as needed -->
-                                  </div>
+                                </div>
+                                <div class="vmap" id="vmap" style="height: 100%" data-toggle="tooltip" data-original-title="">
                                 </div>
                             </div>
                         </div>
@@ -349,7 +351,7 @@ jQuery(document).ready(function() {
                                     window.myChart = new Chart(ctx, {
                                         type: 'horizontalBar',
                                         data: {
-                                            labels: ['Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'],
+                                            labels: ['Garis Kemiskinan (Rp)', 'Upah Minimum (Rp)', 'Pengeluaran (Rp)', 'Rata-rata Upah per Jam (Rp)'],
                                             datasets: [{
                                                 data: [
                                                     found.garis_kemiskinan,

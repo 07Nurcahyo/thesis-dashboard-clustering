@@ -302,7 +302,7 @@
             "order": [[ 1, "asc" ], [ 2, "asc" ]],
             initComplete: function() {
                 var api = this.api();
-                api.buttons().container().appendTo('#buttons');// .addClass('float-right');
+                api.buttons().container().appendTo('#buttons');
             },
         });
         $('#id_provinsi').on('change',function() {
@@ -414,24 +414,9 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                // success: function (res) {
-                //     let tableHtml = `<table class="table table-bordered">
-                //         <thead><tr>`;
-                //     res.columns.forEach(col => tableHtml += `<th>${col}</th>`);
-                //     tableHtml += `</tr></thead><tbody>`;
-                //     res.rows.forEach((row, index) => {
-                //         tableHtml += `<tr>`;
-                //         row.forEach(cell => tableHtml += `<td>${cell}</td>`);
-                //         tableHtml += `<td><input type="checkbox" name="row_ids[]" value="${index}" /></td>`;
-                //         tableHtml += `</tr>`;
-                //     });
-                //     tableHtml += `</tbody></table>`;
-                //     $('#csv_preview_container').html(tableHtml);
-                // }
                 success: function (res) {
                     let tableHtml = `<table class="table table-bordered"><thead><tr>`;
                             tableHtml += `<th><input type="checkbox" id="select_all" checked/></th>`; // Header untuk checkbox
-                            // res.columns.forEach(col => tableHtml += `<th>${col}</th>`);
                             ['Provinsi', 'Tahun', 'Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'].forEach((col, index) => {
                                 tableHtml += `<th>${col}</th>`;
                             });

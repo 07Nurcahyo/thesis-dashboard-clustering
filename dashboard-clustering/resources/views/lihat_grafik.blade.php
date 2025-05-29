@@ -3,6 +3,41 @@
 @section('content')
 <div class="container">
 
+    {{-- piechart jumlah cluster --}}
+    <div class="row">
+        <div class="col-md-6">
+            {{-- piechart keseluruhan  --}}
+            <div class="card">
+                <div class="card-header bg-navy">
+                    <h2 class="card-title font-weight-bold" style="font-size: 22px">Jumlah Cluster Keseluruhan</h2>
+                </div>
+                <div class="card-body" style="background-color: ">
+                    <canvas id="pieChartKeseluruhan"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {{-- piechart per tahun filter by tahun --}}
+            <div class="card">
+                <div class="card-header bg-navy">
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool">
+                            <select id="tahunFilter" class="form-control bg-light border-dark">
+                                @foreach($tahunList as $tahun)
+                                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+                                @endforeach
+                            </select>
+                        </button>
+                    </div>
+                    <h2 class="card-title font-weight-bold" style="font-size: 22px">Jumlah Cluster Per Tahun</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="pieChartTahun"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- linechart --}}
     <div class="card">
         <div class="card-header bg-navy">
@@ -165,7 +200,7 @@ $(function () {
                 // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataGK',
                 apiUrl: '/api/getDataGK',
                 labelKey: 'garis_kemiskinan',
-                displayLabel: 'Garis Kemiskinan',
+                displayLabel: 'Garis Kemiskinan (Rp)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)'
             },
@@ -174,7 +209,7 @@ $(function () {
                 // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataUMP',
                 apiUrl: '/api/getDataUMP',
                 labelKey: 'upah_minimum',
-                displayLabel: 'Upah Minimum',
+                displayLabel: 'Upah Minimum (Rp)',
                 backgroundColor: 'rgba(255, 206, 86, 0.2)',
                 borderColor: 'rgba(255, 206, 86, 1)'
             },
@@ -183,7 +218,7 @@ $(function () {
                 // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataPengeluaran',
                 apiUrl: '/api/getDataPengeluaran',
                 labelKey: 'pengeluaran',
-                displayLabel: 'Pengeluaran',
+                displayLabel: 'Pengeluaran (Rp)',
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 borderColor: 'rgba(153, 102, 255, 1)'
             },
@@ -192,7 +227,7 @@ $(function () {
                 // apiUrl: 'http://localhost/Skripsi/dashboard-clustering/public/api/getDataRRU',
                 apiUrl: '/api/getDataRRU',
                 labelKey: 'rr_upah',
-                displayLabel: 'Rata-Rata Upah',
+                displayLabel: 'Rata-Rata Upah per Jam (Rp)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)'
             }
@@ -333,17 +368,17 @@ $(function () {
 
         // Combined chart: GK, UMP, Pengeluaran
         const combinedApis = {
-            'Garis Kemiskinan': {
+            'Garis Kemiskinan (Rp)': {
                 api: '/api/getLineGK',
                 key: 'garis_kemiskinan',
                 color: 'rgba(255, 99, 132, 1)'
             },
-            'Upah Minimum': {
+            'Upah Minimum (Rp)': {
                 api: '/api/getLineUMP',
                 key: 'upah_minimum',
                 color: 'rgba(255, 206, 86, 1)'
             },
-            'Pengeluaran': {
+            'Pengeluaran (Rp)': {
                 api: '/api/getLinePengeluaran',
                 key: 'pengeluaran',
                 color: 'rgba(153, 102, 255, 1)'
@@ -399,7 +434,7 @@ $(function () {
             data: {
                 labels: rruData.map(item => item.tahun),
                 datasets: [{
-                    label: 'Rata-Rata Upah',
+                    label: 'Rata-Rata Upah per Jam (Rp)',
                     data: rruData.map(item => item.rr_upah),
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -415,7 +450,7 @@ $(function () {
                         title: { display: true, text: 'Tahun' }
                     },
                     y: {
-                        title: { display: true, text: 'Rata-Rata Upah' }
+                        title: { display: true, text: 'Rata-Rata Upah per Jam (Rp)' }
                     }
                 },
                 plugins: {
@@ -442,6 +477,135 @@ $(function () {
         renderAllLineCharts(initialProvinsi);
     }
 
+});
+
+// piechart
+// document.addEventListener("DOMContentLoaded", function () {
+//     const ctxKeseluruhan = document.getElementById('pieChartKeseluruhan').getContext('2d');
+//     const ctxTahun = document.getElementById('pieChartTahun').getContext('2d');
+//     const tahunFilter = document.getElementById('tahunFilter');
+
+//     let chartKeseluruhan;
+//     let chartTahun;
+
+//     function renderPieChart(ctx, data, chartInstance) {
+//         const labels = ['C1 (Sejahtera)', 'C2 (Kurang Mampu)', 'C3 (Menengah)'];
+//         const chartData = [
+//             data['1'] || 0,
+//             data['2'] || 0,
+//             data['3'] || 0
+//         ];
+
+//         if (chartInstance) {
+//             chartInstance.destroy();
+//         }
+
+//         return new Chart(ctx, {
+//             type: 'pie',
+//             data: {
+//                 labels: labels,
+//                 datasets: [{
+//                     data: chartData,
+//                     backgroundColor: ['#00ff00', '#ff0000', '#ffff00'],
+//                     borderColor: 'black',
+//                     borderWidth: 1
+//                 }]
+//             },
+//             options: {
+//                 responsive: true,
+//                 plugins: {
+//                     legend: {
+//                         position: 'bottom'
+//                     }
+//                 }
+//             }
+//         });
+//     }
+
+//     function loadChartData(tahun = 2024) {
+//         fetch(`/get-pie-chart?tahun=${tahun}`)
+//             .then(res => res.json())
+//             .then(res => {
+//                 chartKeseluruhan = renderPieChart(ctxKeseluruhan, res.keseluruhan, chartKeseluruhan);
+//                 chartTahun = renderPieChart(ctxTahun, res.perTahun, chartTahun);
+//             });
+//     }
+
+//     // Initial load
+//     loadChartData(tahunFilter.value);
+
+//     // Filter by year
+//     tahunFilter.addEventListener('change', function () {
+//         loadChartData(this.value);
+//     });
+// });
+// piechart tanpa load yang keseluruhan
+document.addEventListener("DOMContentLoaded", function () {
+    const ctxKeseluruhan = document.getElementById('pieChartKeseluruhan').getContext('2d');
+    const ctxTahun = document.getElementById('pieChartTahun').getContext('2d');
+    const tahunFilter = document.getElementById('tahunFilter');
+
+    let chartKeseluruhan;
+    let chartTahun;
+
+    function renderPieChart(ctx, data, chartInstance) {
+        const labels = ['C1 (Sejahtera)', 'C2 (Kurang Mampu)', 'C3 (Menengah)'];
+        const chartData = [
+            data['1'] || 0,
+            data['2'] || 0,
+            data['3'] || 0
+        ];
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        return new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: ['#00ff00', '#ff0000', '#ffff00'],
+                    borderColor: 'black',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    function loadKeseluruhanChart() {
+        fetch(`/get-pie-chart`)
+            .then(res => res.json())
+            .then(res => {
+                chartKeseluruhan = renderPieChart(ctxKeseluruhan, res.keseluruhan, chartKeseluruhan);
+            });
+    }
+
+    function loadChartTahun(tahun) {
+        fetch(`/get-pie-chart?tahun=${tahun}`)
+            .then(res => res.json())
+            .then(res => {
+                chartTahun = renderPieChart(ctxTahun, res.perTahun, chartTahun);
+            });
+    }
+
+    // Load awal
+    loadKeseluruhanChart(); // hanya sekali saat page load
+    loadChartTahun(tahunFilter.value); // tahun default
+
+    // Event listener untuk filter tahun
+    tahunFilter.addEventListener('change', function () {
+        loadChartTahun(this.value); // hanya chart tahun yang di-refresh
+    });
 });
 </script>
 @endpush

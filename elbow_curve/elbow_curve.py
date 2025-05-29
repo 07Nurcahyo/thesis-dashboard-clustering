@@ -2,8 +2,8 @@ import pandas as pd
 
 # Load the uploaded CSV file to analyze its contents
 # file_path = 'data kesejahteraan pekerja - normalized.csv'
-# file_path = 'elbow curve - hasil pra proses data.csv'
-file_path = 'k means data update.csv'
+file_path = 'elbow curve - hasil pra proses data.csv'
+# file_path = 'k means data update.csv'
 data = pd.read_csv(file_path)
 # Display the first few rows of the dataset to understand its structure
 print(data.head(), data.shape)

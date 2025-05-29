@@ -120,6 +120,45 @@
         </div>
     </div>
 
+    {{-- Visualisasi silhouette score untuk untuk validasi jumlah K yang ideal --}}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="font-bold">Visualisasi SSE per Iterasi (Elbow Method)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="sseChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    {{-- <h5 class="font-bold">Validasi Jumlah Cluster Optimal (Elbow Method)</h5> --}}
+                    {{-- <h5 class="font-bold">Silhouette Score</h5> --}}
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h5 class="font-bold">
+                                Rata-Rata Silhouette Score :
+                            </h5> 
+                        </div>
+                        <div class="col-md-7 font-weight-bold" style="font-size: 18px">
+                            <div id="silhouette-score">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{-- <canvas id="elbowChart" height="150"></canvas> --}}
+                    <canvas id="silhouetteChart" style="max-width:600px; max-height:300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     {{-- Centroid baru / akhir --}}
     <div class="card card-navy">
         <div class="card-header">
@@ -658,34 +697,7 @@
         });
     });
 
-    // Ganti Manual //
-    // Modal reset setelah close
-    // $('#gantiManual').on('hidden.bs.modal', function () {
-    //     $(this).find('form')[0].reset();
-    // });
-    // Validasi input agar tidak melebihi jumlah digit
-    // $('#formGantiManual').on('submit', function (event) {
-    //     let messages = [];
-    //     // Validasi ID Pekerja, Garis Kemiskinan, Upah Minimum, Pengeluaran (max 7 digit)
-    //     $('input[name*="garis_kemiskinan"], input[name*="upah_minimum"], input[name*="pengeluaran"]').each(function() {
-    //         let value = $(this).val();
-    //         if (value.length > 7) {
-    //             messages.push("Maksimal 7 digit untuk ID Pekerja, Garis Kemiskinan, Upah Minimum, dan Pengeluaran.");
-    //         }
-    //     });
-    //     // Validasi RR Upah (max 5 digit)
-    //     $('input[name*="rr_upah"]').each(function() {
-    //         let value = $(this).val();
-    //         if (value.length > 5) {
-    //             messages.push("Maksimal 5 digit untuk RR Upah.");
-    //         }
-    //     });
-    //     if (messages.length > 0) {
-    //         alert(messages.join("\n"));
-    //         event.preventDefault();
-    //         return false;
-    //     }
-    // });
+
     $('#formGantiManual').on('submit', function (event) {
         event.preventDefault(); // Cegah submit default
 
@@ -875,6 +887,181 @@
             }
         });
     });
+
+    // Visualisasi SSE Chart
+    $(document).ready(function () {
+        $.get("{{ route('data.sse') }}", function(data) {
+            const ctx = document.getElementById('sseChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'SSE per Iterasi',
+                        data: data.values,
+                        fill: true,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.3,
+                        pointBackgroundColor: 'rgb(0, 123, 255)',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Elbow Method - SSE per Iterasi'
+                        }
+                    },
+                    // scales: {
+                    //     x: {
+                    //         title: { display: true, text: 'Iterasi ke-' }
+                    //     },
+                    //     y: {
+                    //         title: { display: true, text: 'SSE (Sum of Squared Errors) - Iterasi ke-' },
+                    //         beginAtZero: false
+                    //     }
+                    // },
+                    scales: {
+                        xAxes: [{ 
+                            scaleLabel: { display: true, labelString: 'Iterasi ke-' } 
+                        }],
+                        yAxes: [{ 
+                            scaleLabel: { display: true, labelString: 'SSE (Sum of Squared Errors)' } 
+                        }]
+                    },
+                }
+            });
+        });
+    });
+
+    // Visualisasi Elbow Chart
+    $(document).ready(function () {
+        $.get("{{ route('data.elbow') }}", function (data) {
+            const ctx = document.getElementById('elbowChart').getContext('2d');
+            const kValues = data.map(item => item.k);
+            const sseValues = data.map(item => item.sse);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: kValues,
+                    datasets: [{
+                        label: 'SSE vs Jumlah Cluster (K)',
+                        data: sseValues,
+                        fill: false,
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.3,
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Elbow Method - Tentukan K Optimal'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Jumlah Cluster (K)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'SSE (Sum of Squared Errors)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+    // silhouette score // /// // /// //
+    // async function fetchSilhouetteScore() {
+    //     try {
+    //         let response = await fetch('{{ route("silhouette.score") }}');
+    //         let data = await response.json();
+    //         if(data.silhouette_score !== null) {
+    //             document.getElementById('silhouette-score').innerText = data.silhouette_score;
+    //         } else {
+    //             document.getElementById('silhouette-score').innerText = data.message || 'Tidak ada data';
+    //         }
+    //     } catch (error) {
+    //         document.getElementById('silhouette-score').innerText = 'Error mengambil data';
+    //         console.error(error);
+    //     }
+    // }
+    // // Panggil saat halaman siap
+    // window.addEventListener('DOMContentLoaded', fetchSilhouetteScore);
+
+    async function fetchSilhouetteScore() {
+        try {
+            let response = await fetch('{{ route("silhouette.score") }}');
+            let data = await response.json();
+
+            if(data.silhouette_score !== null) {
+                document.getElementById('silhouette-score').innerText = data.silhouette_score;
+
+                // Siapkan data grafik per cluster
+                const labels = Object.keys(data.per_cluster).map(c => 'Cluster ' + c);
+                const values = Object.values(data.per_cluster).map(v => parseFloat(v.toFixed(4)));
+
+                // Render chart
+                const ctx = document.getElementById('silhouetteChart').getContext('2d');
+
+                // Jika chart sudah pernah dibuat, destroy dulu supaya gak duplikat
+                if(window.silhouetteChartInstance) {
+                    window.silhouetteChartInstance.destroy();
+                }
+
+                window.silhouetteChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Rata-rata Silhouette Score per Cluster',
+                            data: values,
+                            backgroundColor: ['#3e95cd', '#8e5ea2', '#3cba9f'],
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ctx.parsed.y.toFixed(4)
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else {
+                document.getElementById('silhouette-score').innerText = data.message || 'Tidak ada data';
+            }
+        } catch (error) {
+            document.getElementById('silhouette-score').innerText = 'Error mengambil data';
+            console.error(error);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchSilhouetteScore);
 
 
 </script>

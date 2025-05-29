@@ -152,6 +152,31 @@ class main_controller extends Controller
 
         return response()->json($query->get());
     }
+
+    public function getPieChart(Request $request)
+    {
+        $tahun = $request->input('tahun');
+
+        // Data keseluruhan
+        $dataKeseluruhan = data_pekerja_cluster::selectRaw('cluster, COUNT(*) as jumlah')
+            ->groupBy('cluster')
+            ->pluck('jumlah', 'cluster');
+
+        // Data per tahun (default ke 2024)
+        $dataTahun = data_pekerja_cluster::when($tahun, function ($query) use ($tahun) {
+                return $query->where('tahun', $tahun);
+            })
+            ->selectRaw('cluster, COUNT(*) as jumlah')
+            ->groupBy('cluster')
+            ->pluck('jumlah', 'cluster');
+
+        return response()->json([
+            'keseluruhan' => $dataKeseluruhan,
+            'perTahun' => $dataTahun,
+        ]);
+    }
+
+
     // linechart
     public function getLineGK(Request $request)
     {
