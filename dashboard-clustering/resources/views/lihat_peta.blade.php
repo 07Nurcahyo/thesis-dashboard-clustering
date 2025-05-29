@@ -320,7 +320,10 @@ jQuery(document).ready(function() {
                     enableZoom: false,
                     hoverColor: '#c9dfaf',
                     normalizeFunction: 'linear',
-                    selectedColor: '#c9dfaf',
+                    // selectedColor: '#c9dfaf',
+                    selectedColor: null,
+                    // hoverOpacity: 1,
+                    selectedOpacity: 1,
                     showTooltip: false,
                     colors: colors,
                     onRegionClick: function(element, code, region) {

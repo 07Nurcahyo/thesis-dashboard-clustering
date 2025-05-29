@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function() {
         Route::group(['prefix' => 'admin'], function() {
             Route::get('/', [admin_controller::class, 'index']);
             Route::get('/dashboard', [admin_controller::class, 'index']);
+            Route::get('/get-pie-chart', [main_controller::class, 'getPieChart']);
             Route::get('/kelola_data', [admin_controller::class, 'kelola_data']);
                 Route::get('list_data_pekerja', [admin_controller::class, 'list_data_pekerja'])->name('list_data_pekerja');
                 Route::get('/create', [admin_controller::class, 'create_data_pekerja'])->name('create_data_pekerja');

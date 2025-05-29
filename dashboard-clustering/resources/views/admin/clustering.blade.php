@@ -107,11 +107,14 @@
         </div>
         <div class="col-md-3">
             <div class="card card-navy">
+                <div class="card-header bg-navy">
+                    <h2 class="card-title font-weight-bold" style="font-size: 22px">SSE <small>(Sum of Squared Error)</small></h2>
+                </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped w-100 table-sm" id="tabel_data_sse">
                         <thead>
                             <tr style="text-align: center;">
-                            <th>SSE</th>
+                                <th>SSE</th>
                             </tr>
                         </thead>
                     </table>
@@ -124,8 +127,8 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="font-bold">Visualisasi SSE per Iterasi (Elbow Method)</h5>
+                <div class="card-header bg-navy">
+                    <h5 class="font-bold">SSE per Iterasi <small>(Semakin kecil semakin optimal)</small></h5>
                 </div>
                 <div class="card-body">
                     <canvas id="sseChart" height="150"></canvas>
@@ -134,7 +137,7 @@
         </div>
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-navy">
                     {{-- <h5 class="font-bold">Validasi Jumlah Cluster Optimal (Elbow Method)</h5> --}}
                     {{-- <h5 class="font-bold">Silhouette Score</h5> --}}
                     <div class="row">
@@ -1031,7 +1034,7 @@
                         datasets: [{
                             label: 'Rata-rata Silhouette Score per Cluster',
                             data: values,
-                            backgroundColor: ['#3e95cd', '#8e5ea2', '#3cba9f'],
+                            backgroundColor: ['#34C759', '#E74C3C', '#F1C40F'],
                         }]
                     },
                     options: {
