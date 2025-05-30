@@ -916,78 +916,78 @@
                         legend: { display: false },
                         title: {
                             display: true,
-                            text: 'Elbow Method - SSE per Iterasi'
+                            text: 'SSE per Iterasi'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Iterasi ke-' }
+                        },
+                        y: {
+                            title: { display: true, text: 'SSE (Sum of Squared Errors)' },
+                            beginAtZero: false
                         }
                     },
                     // scales: {
-                    //     x: {
-                    //         title: { display: true, text: 'Iterasi ke-' }
-                    //     },
-                    //     y: {
-                    //         title: { display: true, text: 'SSE (Sum of Squared Errors) - Iterasi ke-' },
-                    //         beginAtZero: false
-                    //     }
+                    //     xAxes: [{ 
+                    //         scaleLabel: { display: true, labelString: 'Iterasi ke-' } 
+                    //     }],
+                    //     yAxes: [{ 
+                    //         scaleLabel: { display: true, labelString: 'SSE (Sum of Squared Errors)' } 
+                    //     }]
                     // },
-                    scales: {
-                        xAxes: [{ 
-                            scaleLabel: { display: true, labelString: 'Iterasi ke-' } 
-                        }],
-                        yAxes: [{ 
-                            scaleLabel: { display: true, labelString: 'SSE (Sum of Squared Errors)' } 
-                        }]
-                    },
                 }
             });
         });
     });
 
     // Visualisasi Elbow Chart
-    $(document).ready(function () {
-        $.get("{{ route('data.elbow') }}", function (data) {
-            const ctx = document.getElementById('elbowChart').getContext('2d');
-            const kValues = data.map(item => item.k);
-            const sseValues = data.map(item => item.sse);
+    // $(document).ready(function () {
+    //     $.get("{{ route('data.elbow') }}", function (data) {
+    //         const ctx = document.getElementById('elbowChart').getContext('2d');
+    //         const kValues = data.map(item => item.k);
+    //         const sseValues = data.map(item => item.sse);
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: kValues,
-                    datasets: [{
-                        label: 'SSE vs Jumlah Cluster (K)',
-                        data: sseValues,
-                        fill: false,
-                        borderColor: 'rgb(255, 99, 132)',
-                        tension: 0.3,
-                        pointBackgroundColor: 'rgb(255, 99, 132)',
-                        pointRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Elbow Method - Tentukan K Optimal'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Jumlah Cluster (K)'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'SSE (Sum of Squared Errors)'
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    });
+    //         new Chart(ctx, {
+    //             type: 'line',
+    //             data: {
+    //                 labels: kValues,
+    //                 datasets: [{
+    //                     label: 'SSE vs Jumlah Cluster (K)',
+    //                     data: sseValues,
+    //                     fill: false,
+    //                     borderColor: 'rgb(255, 99, 132)',
+    //                     tension: 0.3,
+    //                     pointBackgroundColor: 'rgb(255, 99, 132)',
+    //                     pointRadius: 5
+    //                 }]
+    //             },
+    //             options: {
+    //                 responsive: true,
+    //                 plugins: {
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Elbow Method - Tentukan K Optimal'
+    //                     }
+    //                 },
+    //                 scales: {
+    //                     x: {
+    //                         title: {
+    //                             display: true,
+    //                             text: 'Jumlah Cluster (K)'
+    //                         }
+    //                     },
+    //                     y: {
+    //                         title: {
+    //                             display: true,
+    //                             text: 'SSE (Sum of Squared Errors)'
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     });
+    // });
 
     // silhouette score // /// // /// //
     // async function fetchSilhouetteScore() {
