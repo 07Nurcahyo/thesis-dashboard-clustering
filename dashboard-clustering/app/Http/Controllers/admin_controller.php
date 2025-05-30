@@ -716,83 +716,57 @@ class admin_controller extends Controller
         ]);
     }
 
-    public function getElbowData()
-    {
-        // Ambil data pekerja
-        $data = DB::table('data_pekerja')->get()->map(function ($item) {
-            return [
-                'fitur' => [
-                    (double) $item->garis_kemiskinan,
-                    (double) $item->upah_minimum,
-                    (double) $item->pengeluaran,
-                    (double) $item->rr_upah
-                ]
-            ];
-        })->toArray();
-
-        $results = [];
-
-        // Coba dari K = 2 sampai K = 10
-        for ($k = 2; $k <= 10; $k++) {
-            // Ambil centroid awal dari DB (hanya sebanyak K)
-            $clusterAwal = DB::table('iterasi_cluster_awal')
-                ->whereBetween('cluster', [1, $k])
-                ->orderBy('cluster')
-                ->get();
-
-            $centroids = [];
-            foreach ($clusterAwal as $item) {
-                $centroids[] = [
-                    (double) $item->garis_kemiskinan,
-                    (double) $item->upah_minimum,
-                    (double) $item->pengeluaran,
-                    (double) $item->rr_upah
-                ];
-            }
-
-            $clusters = array_fill(0, $k, []);
-            $sse = 0;
-
-            // Klasifikasi setiap data ke centroid terdekat
-            foreach ($data as $point) {
-                $fitur = $point['fitur'];
-                $distances = array_map(function ($centroid) use ($fitur) {
-                    return sqrt(array_sum(array_map(function ($a, $b) {
-                        return pow($a - $b, 2);
-                    }, $fitur, $centroid)));
-                }, $centroids);
-
-                $minIndex = array_keys($distances, min($distances))[0];
-                $clusters[$minIndex][] = $fitur;
-
-                $sse += pow($distances[$minIndex], 2);
-            }
-
-            $results[] = [
-                'k' => $k,
-                'sse' => $sse
-            ];
-        }
-
-        return response()->json($results);
-    }
-
     // public function getElbowData()
     // {
-    //     // Ambil semua SSE dari tabel iterasi_sse, urut berdasarkan id_iterasi_sse
-    //     $allSSE = DB::table('iterasi_sse')
-    //         ->orderBy('id_iterasi_sse')
-    //         ->pluck('sse')
-    //         ->toArray();
+    //     // Ambil data pekerja
+    //     $data = DB::table('data_pekerja')->get()->map(function ($item) {
+    //         return [
+    //             'fitur' => [
+    //                 (double) $item->garis_kemiskinan,
+    //                 (double) $item->upah_minimum,
+    //                 (double) $item->pengeluaran,
+    //                 (double) $item->rr_upah
+    //             ]
+    //         ];
+    //     })->toArray();
 
     //     $results = [];
 
-    //     // Karena k dari 2 sampai 10, dan array SSE mungkin mulai dari index 0,
-    //     // kita ambil SSE dari index k - 2
+    //     // Coba dari K = 2 sampai K = 10
     //     for ($k = 2; $k <= 10; $k++) {
-    //         $index = $k - 2;
+    //         // Ambil centroid awal dari DB (hanya sebanyak K)
+    //         $clusterAwal = DB::table('iterasi_cluster_awal')
+    //             ->whereBetween('cluster', [1, $k])
+    //             ->orderBy('cluster')
+    //             ->get();
 
-    //         $sse = isset($allSSE[$index]) ? (double) $allSSE[$index] : 0;
+    //         $centroids = [];
+    //         foreach ($clusterAwal as $item) {
+    //             $centroids[] = [
+    //                 (double) $item->garis_kemiskinan,
+    //                 (double) $item->upah_minimum,
+    //                 (double) $item->pengeluaran,
+    //                 (double) $item->rr_upah
+    //             ];
+    //         }
+
+    //         $clusters = array_fill(0, $k, []);
+    //         $sse = 0;
+
+    //         // Klasifikasi setiap data ke centroid terdekat
+    //         foreach ($data as $point) {
+    //             $fitur = $point['fitur'];
+    //             $distances = array_map(function ($centroid) use ($fitur) {
+    //                 return sqrt(array_sum(array_map(function ($a, $b) {
+    //                     return pow($a - $b, 2);
+    //                 }, $fitur, $centroid)));
+    //             }, $centroids);
+
+    //             $minIndex = array_keys($distances, min($distances))[0];
+    //             $clusters[$minIndex][] = $fitur;
+
+    //             $sse += pow($distances[$minIndex], 2);
+    //         }
 
     //         $results[] = [
     //             'k' => $k,
@@ -802,6 +776,32 @@ class admin_controller extends Controller
 
     //     return response()->json($results);
     // }
+
+    public function getElbowData()
+    {
+        // Ambil semua SSE dari tabel iterasi_sse, urut berdasarkan id_iterasi_sse
+        $allSSE = DB::table('iterasi_sse')
+            ->orderBy('id_iterasi_sse')
+            ->pluck('sse')
+            ->toArray();
+
+        $results = [];
+
+        // Karena k dari 2 sampai 10, dan array SSE mungkin mulai dari index 0,
+        // kita ambil SSE dari index k - 2
+        for ($k = 2; $k <= 10; $k++) {
+            $index = $k - 2;
+
+            $sse = isset($allSSE[$index]) ? (double) $allSSE[$index] : 0;
+
+            $results[] = [
+                'k' => $k,
+                'sse' => $sse
+            ];
+        }
+
+        return response()->json($results);
+    }
 
     // public function silhouetteScore()
     // {

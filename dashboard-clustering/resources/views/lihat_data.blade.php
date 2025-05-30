@@ -106,29 +106,37 @@
     </div> <!-- /.card-body -->
   </div> <!-- /.card -->
 
+
+  {{-- Validasi elbow dan silhouette --}}
   <div class="row">
       <div class="col-md-6">
-          <div class="card">
+          {{-- <div class="card">
               <div class="card-header bg-navy">
                   <h5 class="font-bold">SSE per Iterasi <small>(Semakin kecil semakin optimal)</small></h5>
               </div>
               <div class="card-body">
                   <canvas id="sseChart" height="150"></canvas>
               </div>
+          </div> --}}
+          <div class="card">
+              <div class="card-header bg-navy">
+                  <h5 class="font-bold">Validasi Jumlah Cluster Optimal (Elbow Method)</h5>
+              </div>
+              <div class="card-body">
+                  <canvas id="elbowChart" height="150"></canvas>
+              </div>
           </div>
       </div>
       <div class="col-md-6">
           <div class="card">
               <div class="card-header bg-navy">
-                  {{-- <h5 class="font-bold">Validasi Jumlah Cluster Optimal (Elbow Method)</h5> --}}
-                  {{-- <h5 class="font-bold">Silhouette Score</h5> --}}
                   <div class="row">
                       <div class="col-md-6">
                           <h5 class="font-bold">
                               Rata-Rata Silhouette Score :
                           </h5> 
                       </div>
-                      <div class="col-md-6 font-weight-bold pl-0" style="font-size: 18px">
+                      <div class="col-md-6 font-weight-bold" style="font-size: 18px">
                           <div id="silhouette-score">
                               Loading...
                           </div>
@@ -136,7 +144,6 @@
                   </div>
               </div>
               <div class="card-body">
-                  {{-- <canvas id="elbowChart" height="150"></canvas> --}}
                   <canvas id="silhouetteChart" style="max-width:600px; max-height:300px;"></canvas>
               </div>
           </div>
@@ -487,55 +494,104 @@
   });
 
     // Visualisasi SSE Chart
+  // $(document).ready(function () {
+  //     $.get("{{ route('data.sse') }}", function(data) {
+  //         const ctx = document.getElementById('sseChart').getContext('2d');
+
+  //         new Chart(ctx, {
+  //             type: 'line',
+  //             data: {
+  //                 labels: data.labels,
+  //                 datasets: [{
+  //                     label: 'SSE per Iterasi',
+  //                     data: data.values,
+  //                     fill: true,
+  //                     borderColor: 'rgb(75, 192, 192)',
+  //                     tension: 0.3,
+  //                     pointBackgroundColor: 'rgb(0, 123, 255)',
+  //                     pointRadius: 5
+  //                 }]
+  //             },
+  //             options: {
+  //                 responsive: true,
+  //                 plugins: {
+  //                     legend: { display: false },
+  //                     title: {
+  //                         display: true,
+  //                         text: 'Elbow Method - SSE per Iterasi'
+  //                     }
+  //                 },
+  //                 // scales: {
+  //                 //     x: {
+  //                 //         title: { display: true, text: 'Iterasi ke-' }
+  //                 //     },
+  //                 //     y: {
+  //                 //         title: { display: true, text: 'SSE (Sum of Squared Errors) - Iterasi ke-' },
+  //                 //         beginAtZero: false
+  //                 //     }
+  //                 // },
+  //                 scales: {
+  //                     xAxes: [{ 
+  //                         scaleLabel: { display: true, labelString: 'Iterasi ke-' } 
+  //                     }],
+  //                     yAxes: [{ 
+  //                         scaleLabel: { display: true, labelString: 'SSE (Sum of Squared Errors)' } 
+  //                     }]
+  //                 },
+  //             }
+  //         });
+  //     });
+  // });
+
+  // Validasi elbow
   $(document).ready(function () {
-      $.get("{{ route('data.sse') }}", function(data) {
-          const ctx = document.getElementById('sseChart').getContext('2d');
+      $.get("{{ route('data.elbow') }}", function (data) {
+          const ctx = document.getElementById('elbowChart').getContext('2d');
+          const kValues = data.map(item => item.k);
+          const sseValues = data.map(item => item.sse);
 
           new Chart(ctx, {
               type: 'line',
               data: {
-                  labels: data.labels,
+                  labels: kValues,
                   datasets: [{
-                      label: 'SSE per Iterasi',
-                      data: data.values,
-                      fill: true,
-                      borderColor: 'rgb(75, 192, 192)',
+                      label: 'SSE vs Jumlah Cluster (K)',
+                      data: sseValues,
+                      fill: false,
+                      borderColor: 'rgb(255, 99, 132)',
                       tension: 0.3,
-                      pointBackgroundColor: 'rgb(0, 123, 255)',
+                      pointBackgroundColor: 'rgb(255, 99, 132)',
                       pointRadius: 5
                   }]
               },
               options: {
                   responsive: true,
                   plugins: {
-                      legend: { display: false },
                       title: {
                           display: true,
-                          text: 'Elbow Method - SSE per Iterasi'
+                          text: 'Elbow Method - Tentukan K Optimal'
                       }
                   },
-                  // scales: {
-                  //     x: {
-                  //         title: { display: true, text: 'Iterasi ke-' }
-                  //     },
-                  //     y: {
-                  //         title: { display: true, text: 'SSE (Sum of Squared Errors) - Iterasi ke-' },
-                  //         beginAtZero: false
-                  //     }
-                  // },
                   scales: {
-                      xAxes: [{ 
-                          scaleLabel: { display: true, labelString: 'Iterasi ke-' } 
-                      }],
-                      yAxes: [{ 
-                          scaleLabel: { display: true, labelString: 'SSE (Sum of Squared Errors)' } 
-                      }]
-                  },
+                      x: {
+                          title: {
+                              display: true,
+                              text: 'Jumlah Cluster (K)'
+                          }
+                      },
+                      y: {
+                          title: {
+                              display: true,
+                              text: 'SSE (Sum of Squared Errors)'
+                          }
+                      }
+                  }
               }
           });
       });
   });
 
+  // Silhouette Score
   async function fetchSilhouetteScore() {
       try {
           let response = await fetch('{{ route("silhouette.score") }}');
