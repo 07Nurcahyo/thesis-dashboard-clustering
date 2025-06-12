@@ -75,7 +75,8 @@ Route::group(['middleware' => ['auth']], function() {
                 // Route::get('/data-sse', [admin_controller::class, 'getDataSSE'])->name('data.sse');
                 // Route::get('/elbow-data', [admin_controller::class, 'getElbowData'])->name('data.elbow');
                 // Route::get('/silhouette-score', [admin_controller::class, 'silhouetteScore'])->name('silhouette.score');
-
+                // web.php
+                Route::get('download-template-excel', [admin_controller::class, 'downloadTemplate']);
         });
 
     });

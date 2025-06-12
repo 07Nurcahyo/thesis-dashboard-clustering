@@ -254,6 +254,15 @@ class admin_controller extends Controller
 
         return response()->json(['success' => true]);
     }
+    public function downloadTemplate()
+    {
+        $path = public_path('template/template_data_pekerja.xlsx');
+        if (file_exists($path)) {
+            return response()->download($path);
+        } else {
+            abort(404, 'File not found.');
+        }
+    }
 
     public function edit_data_pekerja($id){
         $breadcrumb = (object) [
