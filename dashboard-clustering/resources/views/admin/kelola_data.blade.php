@@ -109,7 +109,7 @@
                     <div class="modal-body" style="overflow-y: scroll; max-height: 450px;">
                         <p class="badge badge-warning" style="font-size: 18px">Silakan pilih file CSV atau Excel untuk diunggah. Pastikan formatnya sesuai dengan yang diharapkan.</p><br>
                         <p class="badge badge-warning" style="font-size: 18px">Centang untuk memilih data yang akan dimasukkan</p><br>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-3">
                                 <p class="badge badge-warning" style="font-size: 18px">Unduh file template berikut:</p>
                             </div>
@@ -118,7 +118,11 @@
                                     <i class="fas fa-file"></i> Unduh Template Excel
                                 </a>
                             </div>
-                        </div>
+                        </div> --}}
+                        <p class="badge badge-warning" style="font-size: 18px">
+                            Unduh file template berikut: 
+                            <a href="{{ asset('template/template_data_pekerja.xlsx') }}" download>Download Template Excel</a>
+                        </p>
                         <input type="file" name="csv_file" id="csv_file" accept=".csv,.xlsx" class="form-control mb-3" required>
                         <div id="csv_preview_container"></div>
                     </div>
