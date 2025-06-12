@@ -114,10 +114,13 @@
                                 <p class="badge badge-warning" style="font-size: 18px">Unduh file template berikut:</p>
                             </div>
                             <div class="col-md-9">
-                                {{-- <a href="{{ asset('template/template_data_kesejahteraan.xlsx') }}" class="btn btn-sm btn-outline-primary mb-3" download>
+                                <a href="{{ asset('template/template_data_kesejahteraan.xlsx') }}" class="btn btn-sm btn-outline-primary mb-3" download>
                                     <i class="fas fa-file"></i> Unduh Template Excel
+                                </a>
+                                {{-- <a href="{{ url('admin/download-template-excel') }}" class="btn btn-sm btn-outline-primary mb-3"><i class="fas fa-file"></i> Download Template Excel</a> --}}
+                                {{-- <a href="{{ route('admin.download-template-excel') }}" class="btn btn-sm btn-info">
+                                    <i class="material-icons text-sm">download</i> Download Template
                                 </a> --}}
-                                <a href="{{ url('admin/download-template-excel') }}" class="btn btn-sm btn-outline-primary mb-3"><i class="fas fa-file"></i> Download Template Excel</a>
                             </div>
                         </div>
                         {{-- <p class="badge badge-warning" style="font-size: 18px">
