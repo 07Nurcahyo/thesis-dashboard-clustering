@@ -789,7 +789,7 @@ class admin_controller extends Controller
 
         // Karena k dari 2 sampai 10, dan array SSE mungkin mulai dari index 0,
         // kita ambil SSE dari index k - 2
-        for ($k = 2; $k <= 10; $k++) {
+        for ($k = 2; $k <= 8; $k++) {
             $index = $k - 2;
 
             $sse = isset($allSSE[$index]) ? (double) $allSSE[$index] : 0;

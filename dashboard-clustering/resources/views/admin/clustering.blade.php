@@ -125,17 +125,17 @@
 
     
 
+    {{-- <div class="card">
+        <div class="card-header bg-navy">
+            <h5 class="font-bold">SSE per Iterasi <small>(Semakin kecil semakin optimal)</small></h5>
+        </div>
+        <div class="card-body">
+            <canvas id="sseChart" height="150"></canvas>
+        </div>
+    </div> --}}
     {{-- Visualisasi elbow dan silhouette score untuk untuk validasi jumlah K yang ideal --}}
     <div class="row">
         <div class="col-md-6">
-            {{-- <div class="card">
-                <div class="card-header bg-navy">
-                    <h5 class="font-bold">SSE per Iterasi <small>(Semakin kecil semakin optimal)</small></h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="sseChart" height="150"></canvas>
-                </div>
-            </div> --}}
             <div class="card">
                 <div class="card-header bg-navy">
                     <h5 class="font-bold">Validasi Jumlah Cluster Optimal (Elbow Method)</h5>
@@ -1069,7 +1069,6 @@
             console.error(error);
         }
     }
-
     window.addEventListener('DOMContentLoaded', fetchSilhouetteScore);
 
 
