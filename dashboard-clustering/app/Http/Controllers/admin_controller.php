@@ -256,11 +256,12 @@ class admin_controller extends Controller
     }
     public function downloadTemplate()
     {
-        $path = public_path('template/template_data_pekerja.xlsx');
+        $path = public_path('template\template_data_kesejahteraan.xlsx');
+        // logger($path);
         if (file_exists($path)) {
             return response()->download($path);
         } else {
-            abort(404, 'File not found.');
+            abort(404, 'File tidak ditemukan.');
         }
     }
 
