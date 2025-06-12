@@ -107,8 +107,18 @@
                         <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
                     </div>
                     <div class="modal-body" style="overflow-y: scroll; max-height: 450px;">
-                        <p class="badge badge-warning" style="font-size: 18px">Silakan pilih file CSV atau Excel untuk diunggah. Pastikan formatnya sesuai dengan yang diharapkan.</p>
-                        <p class="badge badge-warning" style="font-size: 18px">Centang untuk memilih data yang akan dimasukkan</p>
+                        <p class="badge badge-warning" style="font-size: 18px">Silakan pilih file CSV atau Excel untuk diunggah. Pastikan formatnya sesuai dengan yang diharapkan.</p><br>
+                        <p class="badge badge-warning" style="font-size: 18px">Centang untuk memilih data yang akan dimasukkan</p><br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p class="badge badge-warning" style="font-size: 18px">Unduh file template berikut:</p>
+                            </div>
+                            <div class="col-md-9">
+                                <a href="{{ asset('template/template_data_kesejahteraan.xlsx') }}" class="btn btn-sm btn-outline-primary mb-3" download>
+                                    <i class="fas fa-file"></i> Unduh Template Excel
+                                </a>
+                            </div>
+                        </div>
                         <input type="file" name="csv_file" id="csv_file" accept=".csv,.xlsx" class="form-control mb-3" required>
                         <div id="csv_preview_container"></div>
                     </div>
@@ -402,6 +412,44 @@
 
 
         // input csv
+        // $('#csv_file').on('change', function () {
+        //     let file = this.files[0];
+        //     if (!file) return;
+        //     let formData = new FormData();
+        //     formData.append('csv_file', file);
+        //     formData.append('_token', '{{ csrf_token() }}');
+        //     $.ajax({
+        //         url: "{{ url('admin/preview_csv') }}",
+        //         type: 'POST',
+        //         data: formData,
+        //         contentType: false,
+        //         processData: false,
+        //         success: function (res) {
+        //             let tableHtml = `<table class="table table-bordered"><thead><tr>`;
+        //                     tableHtml += `<th><input type="checkbox" id="select_all" checked/></th>`; // Header untuk checkbox
+        //                     ['Provinsi', 'Tahun', 'Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'].forEach((col, index) => {
+        //                         tableHtml += `<th>${col}</th>`;
+        //                     });
+        //             tableHtml += `</tr></thead><tbody>`;
+        //             res.rows.forEach((row, index) => {
+        //                 tableHtml += `<tr>`;
+        //                 tableHtml += `<td><input type="checkbox" name="row_ids[]" value="${index}" checked/></td>`; // Checkbox sebagai kolom pertama
+        //                 row.forEach(cell => tableHtml += `<td>${cell}</td>`);
+        //                 tableHtml += `</tr>`;
+        //             });
+        //             // dicentang = include data;
+        //             // data yang dimasukkan hanya yang ada di header
+        //             tableHtml += `</tbody></table>`;
+        //             $('#csv_preview_container').html(tableHtml);
+
+        //             // Optional: fungsi untuk checkbox "select all"
+        //             $('#select_all').on('change', function () {
+        //                 $('input[name="row_ids[]"]').prop('checked', this.checked);
+        //             });
+        //         }
+        //     });
+        // });
+        // input csv
         $('#csv_file').on('change', function () {
             let file = this.files[0];
             if (!file) return;
@@ -416,29 +464,32 @@
                 processData: false,
                 success: function (res) {
                     let tableHtml = `<table class="table table-bordered"><thead><tr>`;
-                            tableHtml += `<th><input type="checkbox" id="select_all" checked/></th>`; // Header untuk checkbox
-                            ['Provinsi', 'Tahun', 'Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'].forEach((col, index) => {
-                                tableHtml += `<th>${col}</th>`;
-                            });
+                    tableHtml += `<th><input type="checkbox" id="select_all" checked/></th>`; // Header untuk checkbox
+                    ['Provinsi', 'Tahun', 'Garis Kemiskinan', 'Upah Minimum', 'Pengeluaran', 'Rata-rata Upah'].forEach((col, index) => {
+                        tableHtml += `<th>${col}</th>`;
+                    });
                     tableHtml += `</tr></thead><tbody>`;
-                    res.rows.forEach((row, index) => {
+
+                    // Mulai dari index 1 supaya skip header dari file
+                    for(let index = 1; index < res.rows.length; index++) {
+                        let row = res.rows[index];
                         tableHtml += `<tr>`;
                         tableHtml += `<td><input type="checkbox" name="row_ids[]" value="${index}" checked/></td>`; // Checkbox sebagai kolom pertama
                         row.forEach(cell => tableHtml += `<td>${cell}</td>`);
                         tableHtml += `</tr>`;
-                    });
-                    // dicentang = include data;
-                    // data yang dimasukkan hanya yang ada di header
+                    }
+
                     tableHtml += `</tbody></table>`;
                     $('#csv_preview_container').html(tableHtml);
 
-                    // Optional: fungsi untuk checkbox "select all"
+                    // Checkbox "select all"
                     $('#select_all').on('change', function () {
                         $('input[name="row_ids[]"]').prop('checked', this.checked);
                     });
                 }
             });
         });
+
         $('#csvUploadForm').on('submit', function(e) {
             e.preventDefault();
             let formData = new FormData(this);

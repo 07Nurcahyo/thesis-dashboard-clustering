@@ -182,6 +182,38 @@ class admin_controller extends Controller
             'rows' => $rows->toArray(),
         ]);
     }
+    // public function import_csv(Request $request)
+    // {
+    //     $request->validate([
+    //         'csv_file' => 'required|file|mimes:csv,xlsx,xls,txt',
+    //     ]);
+
+    //     $collection = Excel::toCollection(null, $request->file('csv_file'));
+    //     $sheet = $collection->first();
+
+    //     $i=0;
+    //     foreach ($sheet as $row) {
+    //         if (empty($row[0])) {
+    //             continue; // Skip empty rows
+    //         }
+    //         if (!in_array($i, $request->get('row_ids', []))) {
+    //             $i++;
+    //             continue;
+    //         }
+    //         $i++;
+    //         data_pekerja::create([
+    //             // 'id_provinsi' => $row['id_provinsi'],
+    //             'id_provinsi' => provinsi::where('nama_provinsi', $row['provinsi'] ?? $row[0])->first()->id_provinsi,
+    //             'tahun' => $row['tahun'] ?? $row[1],
+    //             'garis_kemiskinan' => $row['garis_kemiskinan'] ?? $row[2],
+    //             'upah_minimum' => $row['upah_minimum'] ?? $row[3],
+    //             'pengeluaran' => $row['pengeluaran'] ?? $row[4],
+    //             'rr_upah' => $row['rr_upah'] ?? $row[5],
+    //         ]);
+    //     }
+
+    //     return response()->json(['success' => true]);
+    // }
     public function import_csv(Request $request)
     {
         $request->validate([
@@ -191,29 +223,38 @@ class admin_controller extends Controller
         $collection = Excel::toCollection(null, $request->file('csv_file'));
         $sheet = $collection->first();
 
-        $i=0;
+        $i = 0;
         foreach ($sheet as $row) {
-            if (empty($row[0])) {
-                continue; // Skip empty rows
-            }
-            if (!in_array($i, $request->get('row_ids', []))) {
-                $i++;
+            if ($i == 0) {
+                $i++; // Skip baris pertama (header)
                 continue;
             }
-            $i++;
+
+            if (empty($row[0])) {
+                $i++;
+                continue; // Skip baris kosong
+            }
+
+            if (!in_array($i, $request->get('row_ids', []))) {
+                $i++;
+                continue; // Baris tidak dicentang oleh user
+            }
+
             data_pekerja::create([
-                // 'id_provinsi' => $row['id_provinsi'],
-                'id_provinsi' => provinsi::where('nama_provinsi', $row['provinsi'] ?? $row[0])->first()->id_provinsi,
+                'id_provinsi' => provinsi::where('nama_provinsi', $row['provinsi'] ?? $row[0])->first()->id_provinsi ?? null,
                 'tahun' => $row['tahun'] ?? $row[1],
                 'garis_kemiskinan' => $row['garis_kemiskinan'] ?? $row[2],
                 'upah_minimum' => $row['upah_minimum'] ?? $row[3],
                 'pengeluaran' => $row['pengeluaran'] ?? $row[4],
                 'rr_upah' => $row['rr_upah'] ?? $row[5],
             ]);
+
+            $i++;
         }
 
         return response()->json(['success' => true]);
     }
+
     public function edit_data_pekerja($id){
         $breadcrumb = (object) [
             'title' => 'Edit Data Pekerja',
